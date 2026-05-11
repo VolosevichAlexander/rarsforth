@@ -679,6 +679,49 @@ void w_load() {
     cell_store(IN_ADDR, saved_in);
 }
 
+/* === INCLUDE === */
+#define INCLUDE_BUF_SIZE 16384
+char include_buf[INCLUDE_BUF_SIZE];
+char include_line[TIB_SIZE];
+unsigned char include_tib_save[TIB_SIZE];
+
+void w_include() {
+    char path[128];
+    if (read_next_name(path) == 0) { print_string("INCLUDE: no name\n"); return; }
+    int fd = open_file(path, 0);
+    if (fd < 0) { print_string("INCLUDE: open failed\n"); return; }
+    int total = 0;
+    while (total < INCLUDE_BUF_SIZE - 1) {
+        int got = read_file(fd, &include_buf[total], INCLUDE_BUF_SIZE - 1 - total);
+        if (got <= 0) break;
+        total += got;
+    }
+    close_file(fd);
+    include_buf[total] = 0;
+
+    int saved_blk = cell_fetch(BLK_ADDR);
+    int saved_in = cell_fetch(IN_ADDR);
+    for (int i = 0; i < TIB_SIZE; i++) include_tib_save[i] = byte_fetch(TIB_ADDR + i);
+
+    int p = 0;
+    while (p < total) {
+        int q = 0;
+        while (p < total && include_buf[p] != '\n' && include_buf[p] != '\r' && q < TIB_SIZE - 1) {
+            include_line[q++] = include_buf[p++];
+        }
+        include_line[q] = 0;
+        while (p < total && (include_buf[p] == '\n' || include_buf[p] == '\r')) p++;
+        if (q > 0) {
+            eval(include_line);
+            if (abort_flag) break;
+        }
+    }
+
+    cell_store(BLK_ADDR, saved_blk);
+    for (int i = 0; i < TIB_SIZE; i++) byte_store(TIB_ADDR + i, include_tib_save[i]);
+    cell_store(IN_ADDR, saved_in);
+}
+
 /* === CONVERT === */
 void w_convert() {
     int addr = pop();
@@ -715,6 +758,18 @@ void w_drop(){ pop(); }
 void w_swap(){ int b = pop(); int a = pop(); push(b); push(a); }
 void w_over(){ if (vm.dsp > 1) push(vm.dstack[vm.dsp-2]); }
 void w_rot() { int c=pop(); int b=pop(); int a=pop(); push(b); push(c); push(a); }
+
+void w_dot_s() {
+    int base = current_base();
+    print_char('<');
+    print_in_base(vm.dsp, 10);
+    print_char('>');
+    print_char(' ');
+    for (int i = 0; i < vm.dsp; i++) {
+        print_in_base(vm.dstack[i], base);
+        print_char(' ');
+    }
+}
 
 void w_dot() { int n = pop(); print_in_base(n, current_base()); print_char(' '); }
 void w_u_dot() { unsigned int u = (unsigned int)(pop() & 0xFFFF); print_in_base_unsigned(u, current_base()); print_char(' '); }
@@ -1054,6 +1109,8 @@ void main() {
     create_word("DUP", w_dup, -1, 0); create_word("DROP", w_drop, -1, 0);
     create_word("SWAP", w_swap, -1, 0); create_word("OVER", w_over, -1, 0);
     create_word("ROT", w_rot, -1, 0);
+    create_word(".S", w_dot_s, -1, 0);
+    create_word("INCLUDE", w_include, -1, 0);
 
     create_word(".", w_dot, -1, 0); create_word("U.", w_u_dot, -1, 0);
     create_word("CR", w_cr, -1, 0);

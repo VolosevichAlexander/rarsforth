@@ -4798,6 +4798,310 @@ w_load:
 	lw	s0,56(sp)
 	addi	sp,sp,64
 	jr	ra
+	.globl	include_buf
+.data
+	.align	2
+include_buf:
+	.space 16384
+	.globl	include_line
+	.align	2
+include_line:
+	.space 1024
+	.globl	include_tib_save
+	.align	2
+include_tib_save:
+	.space 1024
+.data
+	.align	2
+.LC18:
+	.string	"INCLUDE: no name\n"
+	.align	2
+.LC19:
+	.string	"INCLUDE: open failed\n"
+	.text
+	.align	2
+	.globl	w_include
+w_include:
+	addi	sp,sp,-256
+	sw	ra,252(sp)
+	sw	s0,248(sp)
+	addi	s0,sp,256
+	addi	a5,s0,-252
+	mv	a0,a5
+	call	read_next_name
+	mv	a5,a0
+	bne	a5,zero,.L380
+# DELETED LUI: 	lui	a5,%hi(.LC18)
+	la a5, .LC18
+	sw	a5,-56(s0)
+	lw	a5,-56(s0)
+	sw	a5,-60(s0)
+	lw	a5,-60(s0)
+ #APP
+# 12 "rars_lib.h" 1
+	mv a0, a5
+	li a7, 4
+	ecall
+# 0 "" 2
+ #NO_APP
+	nop
+	j	.L379
+.L380:
+	addi	a5,s0,-252
+	sw	a5,-64(s0)
+	sw	zero,-68(s0)
+	lw	a5,-64(s0)
+	sw	a5,-72(s0)
+	lw	a5,-68(s0)
+	sw	a5,-76(s0)
+	lw	a5,-72(s0)
+	lw	a4,-76(s0)
+ #APP
+# 43 "rars_lib.h" 1
+	mv a0, a5
+	mv a1, a4
+	li a7, 1024
+	ecall
+	mv a5, a0
+# 0 "" 2
+ #NO_APP
+	sw	a5,-80(s0)
+	lw	a5,-80(s0)
+	sw	a5,-40(s0)
+	lw	a5,-40(s0)
+	bge	a5,zero,.L383
+# DELETED LUI: 	lui	a5,%hi(.LC19)
+	la a5, .LC19
+	sw	a5,-84(s0)
+	lw	a5,-84(s0)
+	sw	a5,-88(s0)
+	lw	a5,-88(s0)
+ #APP
+# 12 "rars_lib.h" 1
+	mv a0, a5
+	li a7, 4
+	ecall
+# 0 "" 2
+ #NO_APP
+	nop
+	j	.L379
+.L383:
+	sw	zero,-20(s0)
+	j	.L384
+.L388:
+	lw	a4,-20(s0)
+# DELETED LUI: 	lui	a5,%hi(include_buf)
+	la a5, include_buf
+	add	a4,a4,a5
+	li	a5,16384
+	addi	a3,a5,-1
+	lw	a5,-20(s0)
+	sub	a5,a3,a5
+	lw	a3,-40(s0)
+	sw	a3,-92(s0)
+	sw	a4,-96(s0)
+	sw	a5,-100(s0)
+	lw	a5,-92(s0)
+	sw	a5,-104(s0)
+	lw	a5,-96(s0)
+	sw	a5,-108(s0)
+	lw	a5,-100(s0)
+	sw	a5,-112(s0)
+	lw	a5,-104(s0)
+	lw	a4,-108(s0)
+	lw	a3,-112(s0)
+ #APP
+# 57 "rars_lib.h" 1
+	mv a0, a5
+	mv a1, a4
+	mv a2, a3
+	li a7, 63
+	ecall
+	mv a5, a0
+# 0 "" 2
+ #NO_APP
+	sw	a5,-116(s0)
+	lw	a5,-116(s0)
+	sw	a5,-44(s0)
+	lw	a5,-44(s0)
+	ble	a5,zero,.L403
+	lw	a4,-20(s0)
+	lw	a5,-44(s0)
+	add	a5,a4,a5
+	sw	a5,-20(s0)
+.L384:
+	lw	a4,-20(s0)
+	li	a5,16384
+	addi	a5,a5,-2
+	ble	a4,a5,.L388
+	j	.L387
+.L403:
+	nop
+.L387:
+	lw	a5,-40(s0)
+	sw	a5,-120(s0)
+	lw	a5,-120(s0)
+	sw	a5,-124(s0)
+	lw	a5,-124(s0)
+ #APP
+# 52 "rars_lib.h" 1
+	mv a0, a5
+	li a7, 57
+	ecall
+# 0 "" 2
+ #NO_APP
+	nop
+# DELETED LUI: 	lui	a5,%hi(include_buf)
+	la a4, include_buf
+	lw	a5,-20(s0)
+	add	a5,a4,a5
+	sb	zero,0(a5)
+	li	a0,6
+	call	cell_fetch
+	sw	a0,-48(s0)
+	li	a0,4
+	call	cell_fetch
+	sw	a0,-52(s0)
+	sw	zero,-24(s0)
+	j	.L389
+.L390:
+	lw	a5,-24(s0)
+	addi	a5,a5,16
+	mv	a0,a5
+	call	byte_fetch
+	mv	a5,a0
+	andi	a4,a5,0xff
+# DELETED LUI: 	lui	a5,%hi(include_tib_save)
+	la a3, include_tib_save
+	lw	a5,-24(s0)
+	add	a5,a3,a5
+	sb	a4,0(a5)
+	lw	a5,-24(s0)
+	addi	a5,a5,1
+	sw	a5,-24(s0)
+.L389:
+	lw	a4,-24(s0)
+	li	a5,1023
+	ble	a4,a5,.L390
+	sw	zero,-28(s0)
+	j	.L391
+.L399:
+	sw	zero,-32(s0)
+	j	.L392
+.L394:
+	lw	a4,-28(s0)
+	addi	a5,a4,1
+	sw	a5,-28(s0)
+	lw	a5,-32(s0)
+	addi	a3,a5,1
+	sw	a3,-32(s0)
+# DELETED LUI: 	lui	a3,%hi(include_buf)
+	la a3, include_buf
+	add	a4,a3,a4
+	lbu	a4,0(a4)
+# DELETED LUI: 	lui	a3,%hi(include_line)
+	la a3, include_line
+	add	a5,a3,a5
+	sb	a4,0(a5)
+.L392:
+	lw	a4,-28(s0)
+	lw	a5,-20(s0)
+	bge	a4,a5,.L393
+# DELETED LUI: 	lui	a5,%hi(include_buf)
+	la a4, include_buf
+	lw	a5,-28(s0)
+	add	a5,a4,a5
+	lbu	a4,0(a5)
+	li	a5,10
+	beq	a4,a5,.L393
+# DELETED LUI: 	lui	a5,%hi(include_buf)
+	la a4, include_buf
+	lw	a5,-28(s0)
+	add	a5,a4,a5
+	lbu	a4,0(a5)
+	li	a5,13
+	beq	a4,a5,.L393
+	lw	a4,-32(s0)
+	li	a5,1022
+	ble	a4,a5,.L394
+.L393:
+# DELETED LUI: 	lui	a5,%hi(include_line)
+	la a4, include_line
+	lw	a5,-32(s0)
+	add	a5,a4,a5
+	sb	zero,0(a5)
+	j	.L395
+.L397:
+	lw	a5,-28(s0)
+	addi	a5,a5,1
+	sw	a5,-28(s0)
+.L395:
+	lw	a4,-28(s0)
+	lw	a5,-20(s0)
+	bge	a4,a5,.L396
+# DELETED LUI: 	lui	a5,%hi(include_buf)
+	la a4, include_buf
+	lw	a5,-28(s0)
+	add	a5,a4,a5
+	lbu	a4,0(a5)
+	li	a5,10
+	beq	a4,a5,.L397
+# DELETED LUI: 	lui	a5,%hi(include_buf)
+	la a4, include_buf
+	lw	a5,-28(s0)
+	add	a5,a4,a5
+	lbu	a4,0(a5)
+	li	a5,13
+	beq	a4,a5,.L397
+.L396:
+	lw	a5,-32(s0)
+	ble	a5,zero,.L391
+# DELETED LUI: 	lui	a5,%hi(include_line)
+	la a0, include_line
+	call	eval
+# DELETED LUI: 	lui	a5,%hi(abort_flag)
+	la t6, abort_flag
+	lw a5, 0(t6)
+	bne	a5,zero,.L404
+.L391:
+	lw	a4,-28(s0)
+	lw	a5,-20(s0)
+	blt	a4,a5,.L399
+	j	.L398
+.L404:
+	nop
+.L398:
+	lw	a1,-48(s0)
+	li	a0,6
+	call	cell_store
+	sw	zero,-36(s0)
+	j	.L400
+.L401:
+	lw	a5,-36(s0)
+	addi	a3,a5,16
+# DELETED LUI: 	lui	a5,%hi(include_tib_save)
+	la a4, include_tib_save
+	lw	a5,-36(s0)
+	add	a5,a4,a5
+	lbu	a5,0(a5)
+	mv	a1,a5
+	mv	a0,a3
+	call	byte_store
+	lw	a5,-36(s0)
+	addi	a5,a5,1
+	sw	a5,-36(s0)
+.L400:
+	lw	a4,-36(s0)
+	li	a5,1023
+	ble	a4,a5,.L401
+	lw	a1,-52(s0)
+	li	a0,4
+	call	cell_store
+.L379:
+	lw	ra,252(sp)
+	lw	s0,248(sp)
+	addi	sp,sp,256
+	jr	ra
 	.align	2
 	.globl	w_convert
 w_convert:
@@ -4820,7 +5124,7 @@ w_convert:
 	lw	a5,-28(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
-.L382:
+.L408:
 	lw	a0,-24(s0)
 	call	byte_fetch
 	sw	a0,-44(s0)
@@ -4829,7 +5133,7 @@ w_convert:
 	call	digit_value
 	sw	a0,-48(s0)
 	lw	a5,-48(s0)
-	blt	a5,zero,.L384
+	blt	a5,zero,.L410
 	lw	a4,-40(s0)
 	lw	a5,-20(s0)
 	mul	a4,a4,a5
@@ -4839,8 +5143,8 @@ w_convert:
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
-	j	.L382
-.L384:
+	j	.L408
+.L410:
 	nop
 	lw	a0,-20(s0)
 	call	push_d
@@ -4853,10 +5157,10 @@ w_convert:
 	jr	ra
 .data
 	.align	2
-.LC18:
+.LC20:
 	.string	"FORGET: no name\n"
 	.align	2
-.LC19:
+.LC21:
 	.string	"FORGET: not found\n"
 	.text
 	.align	2
@@ -4870,9 +5174,9 @@ w_forget:
 	mv	a0,a5
 	call	read_next_name
 	mv	a5,a0
-	bne	a5,zero,.L386
-# DELETED LUI: 	lui	a5,%hi(.LC18)
-	la a5, .LC18
+	bne	a5,zero,.L412
+# DELETED LUI: 	lui	a5,%hi(.LC20)
+	la a5, .LC20
 	sw	a5,-24(s0)
 	lw	a5,-24(s0)
 	sw	a5,-28(s0)
@@ -4885,16 +5189,16 @@ w_forget:
 # 0 "" 2
  #NO_APP
 	nop
-	j	.L385
-.L386:
+	j	.L411
+.L412:
 	addi	a5,s0,-68
 	mv	a0,a5
 	call	find_id
 	sw	a0,-20(s0)
 	lw	a5,-20(s0)
-	bge	a5,zero,.L388
-# DELETED LUI: 	lui	a5,%hi(.LC19)
-	la a5, .LC19
+	bge	a5,zero,.L414
+# DELETED LUI: 	lui	a5,%hi(.LC21)
+	la a5, .LC21
 	sw	a5,-32(s0)
 	lw	a5,-32(s0)
 	sw	a5,-36(s0)
@@ -4907,8 +5211,8 @@ w_forget:
 # 0 "" 2
  #NO_APP
 	nop
-	j	.L385
-.L388:
+	j	.L411
+.L414:
 # DELETED LUI: 	lui	a5,%hi(dict)
 	la a3, dict
 	lw	a4,-20(s0)
@@ -4919,7 +5223,7 @@ w_forget:
 	add	a5,a3,a5
 	lw	a4,40(a5)
 	li	a5,1231
-	ble	a4,a5,.L389
+	ble	a4,a5,.L415
 # DELETED LUI: 	lui	a5,%hi(dict)
 	la a3, dict
 	lw	a4,-20(s0)
@@ -4929,7 +5233,7 @@ w_forget:
 	slli	a5,a5,2
 	add	a5,a3,a5
 	lw	a5,52(a5)
-	beq	a5,zero,.L389
+	beq	a5,zero,.L415
 # DELETED LUI: 	lui	a5,%hi(dict)
 	la a3, dict
 	lw	a4,-20(s0)
@@ -4940,7 +5244,7 @@ w_forget:
 	add	a5,a3,a5
 	lw	a4,52(a5)
 	li	a5,3
-	beq	a4,a5,.L389
+	beq	a4,a5,.L415
 # DELETED LUI: 	lui	a5,%hi(dict)
 	la a3, dict
 	lw	a4,-20(s0)
@@ -4955,12 +5259,12 @@ w_forget:
 	li	a5,65536
 	add	a5,a3,a5
 	sw	a4,520(a5)
-.L389:
+.L415:
 # DELETED LUI: 	lui	a5,%hi(dict_len)
 	lw	a4,-20(s0)
 	la t6, dict_len
 	sw a4, 0(t6)
-.L385:
+.L411:
 	lw	ra,76(sp)
 	lw	s0,72(sp)
 	addi	sp,sp,80
@@ -4975,7 +5279,7 @@ w_dup:
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a5, vm
 	lw	a5,0(a5)
-	ble	a5,zero,.L393
+	ble	a5,zero,.L419
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a5, vm
 	lw	a5,0(a5)
@@ -4987,7 +5291,7 @@ w_dup:
 	lw	a5,4(a5)
 	mv	a0,a5
 	call	push
-.L393:
+.L419:
 	nop
 	lw	ra,12(sp)
 	lw	s0,8(sp)
@@ -5037,7 +5341,7 @@ w_over:
 	la a5, vm
 	lw	a4,0(a5)
 	li	a5,1
-	ble	a4,a5,.L398
+	ble	a4,a5,.L424
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a5, vm
 	lw	a5,0(a5)
@@ -5049,7 +5353,7 @@ w_over:
 	lw	a5,4(a5)
 	mv	a0,a5
 	call	push
-.L398:
+.L424:
 	nop
 	lw	ra,12(sp)
 	lw	s0,8(sp)
@@ -5078,6 +5382,100 @@ w_rot:
 	lw	ra,28(sp)
 	lw	s0,24(sp)
 	addi	sp,sp,32
+	jr	ra
+	.align	2
+	.globl	w_dot_s
+w_dot_s:
+	addi	sp,sp,-64
+	sw	ra,60(sp)
+	sw	s0,56(sp)
+	addi	s0,sp,64
+	call	current_base
+	sw	a0,-24(s0)
+	li	a5,60
+	sb	a5,-41(s0)
+	lbu	a5,-41(s0)
+	sw	a5,-48(s0)
+	lw	a5,-48(s0)
+ #APP
+# 32 "rars_lib.h" 1
+	mv a0, a5
+	li a7, 11
+	ecall
+# 0 "" 2
+ #NO_APP
+	nop
+# DELETED LUI: 	lui	a5,%hi(vm)
+	la a5, vm
+	lw	a5,0(a5)
+	li	a1,10
+	mv	a0,a5
+	call	print_in_base
+	li	a5,62
+	sb	a5,-33(s0)
+	lbu	a5,-33(s0)
+	sw	a5,-40(s0)
+	lw	a5,-40(s0)
+ #APP
+# 32 "rars_lib.h" 1
+	mv a0, a5
+	li a7, 11
+	ecall
+# 0 "" 2
+ #NO_APP
+	nop
+	li	a5,32
+	sb	a5,-25(s0)
+	lbu	a5,-25(s0)
+	sw	a5,-32(s0)
+	lw	a5,-32(s0)
+ #APP
+# 32 "rars_lib.h" 1
+	mv a0, a5
+	li a7, 11
+	ecall
+# 0 "" 2
+ #NO_APP
+	nop
+	sw	zero,-20(s0)
+	j	.L427
+.L428:
+# DELETED LUI: 	lui	a5,%hi(vm)
+	la a4, vm
+	lw	a5,-20(s0)
+	slli	a5,a5,2
+	add	a5,a4,a5
+	lw	a5,4(a5)
+	lw	a1,-24(s0)
+	mv	a0,a5
+	call	print_in_base
+	li	a5,32
+	sb	a5,-49(s0)
+	lbu	a5,-49(s0)
+	sw	a5,-56(s0)
+	lw	a5,-56(s0)
+ #APP
+# 32 "rars_lib.h" 1
+	mv a0, a5
+	li a7, 11
+	ecall
+# 0 "" 2
+ #NO_APP
+	nop
+	lw	a5,-20(s0)
+	addi	a5,a5,1
+	sw	a5,-20(s0)
+.L427:
+# DELETED LUI: 	lui	a5,%hi(vm)
+	la a5, vm
+	lw	a5,0(a5)
+	lw	a4,-20(s0)
+	blt	a4,a5,.L428
+	nop
+	nop
+	lw	ra,60(sp)
+	lw	s0,56(sp)
+	addi	sp,sp,64
 	jr	ra
 	.align	2
 	.globl	w_dot
@@ -5259,8 +5657,8 @@ w_spaces:
 	call	pop
 	sw	a0,-24(s0)
 	sw	zero,-20(s0)
-	j	.L408
-.L409:
+	j	.L437
+.L438:
 	li	a5,32
 	sb	a5,-25(s0)
 	lbu	a5,-25(s0)
@@ -5277,10 +5675,10 @@ w_spaces:
 	lw	a5,-20(s0)
 	addi	a5,a5,1
 	sw	a5,-20(s0)
-.L408:
+.L437:
 	lw	a4,-20(s0)
 	lw	a5,-24(s0)
-	blt	a4,a5,.L409
+	blt	a4,a5,.L438
 	nop
 	nop
 	lw	ra,28(sp)
@@ -5705,7 +6103,7 @@ w_definitions:
 	jr	ra
 .data
 	.align	2
-.LC20:
+.LC22:
 	.string	"LIT"
 	.text
 	.align	2
@@ -5717,8 +6115,8 @@ w_literal:
 	addi	s0,sp,32
 	call	pop
 	sw	a0,-20(s0)
-# DELETED LUI: 	lui	a5,%hi(.LC20)
-	la a0, .LC20
+# DELETED LUI: 	lui	a5,%hi(.LC22)
+	la a0, .LC22
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
@@ -5740,12 +6138,12 @@ w_exit:
 # DELETED LUI: 	lui	a5,%hi(in_user_word)
 	la t6, in_user_word
 	lw a5, 0(t6)
-	ble	a5,zero,.L437
+	ble	a5,zero,.L466
 # DELETED LUI: 	lui	a5,%hi(exit_flag)
 	li	a4,1
 	la t6, exit_flag
 	sw a4, 0(t6)
-.L437:
+.L466:
 	nop
 	lw	ra,12(sp)
 	lw	s0,8(sp)
@@ -5831,14 +6229,14 @@ w_branch0:
 	sw	a4,524(a5)
 	call	pop
 	mv	a5,a0
-	bne	a5,zero,.L442
+	bne	a5,zero,.L471
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a4, vm
 	li	a5,65536
 	add	a5,a4,a5
 	lw	a4,-20(s0)
 	sw	a4,524(a5)
-.L442:
+.L471:
 	nop
 	lw	ra,28(sp)
 	lw	s0,24(sp)
@@ -5872,7 +6270,7 @@ w_branch:
 	jr	ra
 .data
 	.align	2
-.LC21:
+.LC23:
 	.string	"Exec Err\n"
 	.text
 	.align	2
@@ -5885,12 +6283,12 @@ w_execute:
 	call	pop
 	sw	a0,-24(s0)
 	lw	a5,-24(s0)
-	blt	a5,zero,.L445
+	blt	a5,zero,.L474
 # DELETED LUI: 	lui	a5,%hi(dict_len)
 	la t6, dict_len
 	lw a5, 0(t6)
 	lw	a4,-24(s0)
-	bge	a4,a5,.L445
+	bge	a4,a5,.L474
 # DELETED LUI: 	lui	a5,%hi(dict)
 	la a3, dict
 	lw	a4,-24(s0)
@@ -5900,7 +6298,7 @@ w_execute:
 	slli	a5,a5,2
 	add	a5,a3,a5
 	lw	a5,52(a5)
-	bne	a5,zero,.L445
+	bne	a5,zero,.L474
 # DELETED LUI: 	lui	a5,%hi(dict)
 	la a3, dict
 	lw	a4,-24(s0)
@@ -5911,15 +6309,15 @@ w_execute:
 	add	a5,a3,a5
 	lw	a5,36(a5)
 	jalr	a5
-	j	.L444
-.L445:
+	j	.L473
+.L474:
 # DELETED LUI: 	lui	a5,%hi(dict_len)
 	la t6, dict_len
 	lw a5, 0(t6)
 	addi	a5,a5,-1
 	sw	a5,-20(s0)
-	j	.L447
-.L449:
+	j	.L476
+.L478:
 # DELETED LUI: 	lui	a5,%hi(dict)
 	la a3, dict
 	lw	a4,-20(s0)
@@ -5929,7 +6327,7 @@ w_execute:
 	slli	a5,a5,2
 	add	a5,a3,a5
 	lw	a5,52(a5)
-	beq	a5,zero,.L448
+	beq	a5,zero,.L477
 # DELETED LUI: 	lui	a5,%hi(dict)
 	la a3, dict
 	lw	a4,-20(s0)
@@ -5940,30 +6338,30 @@ w_execute:
 	add	a5,a3,a5
 	lw	a5,40(a5)
 	lw	a4,-24(s0)
-	bne	a4,a5,.L448
+	bne	a4,a5,.L477
 	lw	a0,-20(s0)
 	call	execute_dict
-	j	.L444
-.L448:
+	j	.L473
+.L477:
 	lw	a5,-20(s0)
 	addi	a5,a5,-1
 	sw	a5,-20(s0)
-.L447:
+.L476:
 	lw	a5,-20(s0)
-	bge	a5,zero,.L449
+	bge	a5,zero,.L478
 	lw	a5,-24(s0)
-	blt	a5,zero,.L450
+	blt	a5,zero,.L479
 # DELETED LUI: 	lui	a5,%hi(dict_len)
 	la t6, dict_len
 	lw a5, 0(t6)
 	lw	a4,-24(s0)
-	bge	a4,a5,.L450
+	bge	a4,a5,.L479
 	lw	a0,-24(s0)
 	call	execute_dict
-	j	.L444
-.L450:
-# DELETED LUI: 	lui	a5,%hi(.LC21)
-	la a5, .LC21
+	j	.L473
+.L479:
+# DELETED LUI: 	lui	a5,%hi(.LC23)
+	la a5, .LC23
 	sw	a5,-28(s0)
 	lw	a5,-28(s0)
 	sw	a5,-32(s0)
@@ -5976,7 +6374,7 @@ w_execute:
 # 0 "" 2
  #NO_APP
 	nop
-.L444:
+.L473:
 	lw	ra,28(sp)
 	lw	s0,24(sp)
 	addi	sp,sp,32
@@ -6017,7 +6415,7 @@ w_loop_run:
 	sw	a5,-20(s0)
 	lw	a4,-20(s0)
 	lw	a5,-24(s0)
-	bge	a4,a5,.L453
+	bge	a4,a5,.L482
 	lw	a0,-24(s0)
 	call	rpush
 	lw	a0,-20(s0)
@@ -6035,8 +6433,8 @@ w_loop_run:
 	li	a5,65536
 	add	a5,a4,a5
 	sw	a3,524(a5)
-	j	.L455
-.L453:
+	j	.L484
+.L482:
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a4, vm
 	li	a5,65536
@@ -6048,7 +6446,7 @@ w_loop_run:
 	li	a5,65536
 	add	a5,a3,a5
 	sw	a4,524(a5)
-.L455:
+.L484:
 	nop
 	lw	ra,28(sp)
 	lw	s0,24(sp)
@@ -6072,23 +6470,23 @@ w_plus_loop_run:
 	add	a5,a4,a5
 	sw	a5,-36(s0)
 	lw	a5,-24(s0)
-	blt	a5,zero,.L457
+	blt	a5,zero,.L486
 	lw	a4,-36(s0)
 	lw	a5,-32(s0)
 	slt	a5,a4,a5
 	andi	a5,a5,0xff
 	sw	a5,-20(s0)
-	j	.L458
-.L457:
+	j	.L487
+.L486:
 	lw	a4,-36(s0)
 	lw	a5,-32(s0)
 	slt	a5,a4,a5
 	seqz	a5,a5
 	andi	a5,a5,0xff
 	sw	a5,-20(s0)
-.L458:
+.L487:
 	lw	a5,-20(s0)
-	beq	a5,zero,.L459
+	beq	a5,zero,.L488
 	lw	a0,-32(s0)
 	call	rpush
 	lw	a0,-36(s0)
@@ -6106,8 +6504,8 @@ w_plus_loop_run:
 	li	a5,65536
 	add	a5,a4,a5
 	sw	a3,524(a5)
-	j	.L461
-.L459:
+	j	.L490
+.L488:
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a4, vm
 	li	a5,65536
@@ -6119,7 +6517,7 @@ w_plus_loop_run:
 	li	a5,65536
 	add	a5,a3,a5
 	sw	a4,524(a5)
-.L461:
+.L490:
 	nop
 	lw	ra,44(sp)
 	lw	s0,40(sp)
@@ -6135,7 +6533,7 @@ w_i:
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a5, vm
 	lw	a5,260(a5)
-	ble	a5,zero,.L464
+	ble	a5,zero,.L493
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a5, vm
 	lw	a5,260(a5)
@@ -6148,7 +6546,7 @@ w_i:
 	lw	a5,8(a5)
 	mv	a0,a5
 	call	push
-.L464:
+.L493:
 	nop
 	lw	ra,12(sp)
 	lw	s0,8(sp)
@@ -6165,7 +6563,7 @@ w_j:
 	la a5, vm
 	lw	a4,260(a5)
 	li	a5,2
-	ble	a4,a5,.L467
+	ble	a4,a5,.L496
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a5, vm
 	lw	a5,260(a5)
@@ -6178,7 +6576,7 @@ w_j:
 	lw	a5,8(a5)
 	mv	a0,a5
 	call	push
-.L467:
+.L496:
 	nop
 	lw	ra,12(sp)
 	lw	s0,8(sp)
@@ -6195,7 +6593,7 @@ w_leave:
 	la a5, vm
 	lw	a4,260(a5)
 	li	a5,1
-	ble	a4,a5,.L470
+	ble	a4,a5,.L499
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a5, vm
 	lw	a5,260(a5)
@@ -6218,7 +6616,7 @@ w_leave:
 	add	a5,a4,a5
 	lw	a4,-20(s0)
 	sw	a4,8(a5)
-.L470:
+.L499:
 	nop
 	lw	ra,28(sp)
 	lw	s0,24(sp)
@@ -6251,8 +6649,8 @@ w_print_str:
 	add	a5,a3,a5
 	sw	a4,524(a5)
 	sw	zero,-20(s0)
-	j	.L472
-.L473:
+	j	.L501
+.L502:
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a4, vm
 	li	a5,65536
@@ -6288,17 +6686,17 @@ w_print_str:
 	lw	a5,-20(s0)
 	addi	a5,a5,1
 	sw	a5,-20(s0)
-.L472:
+.L501:
 	lw	a4,-20(s0)
 	lw	a5,-24(s0)
-	blt	a4,a5,.L473
+	blt	a4,a5,.L502
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a4, vm
 	li	a5,65536
 	add	a5,a4,a5
 	lw	a5,524(a5)
 	andi	a5,a5,1
-	beq	a5,zero,.L475
+	beq	a5,zero,.L504
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a4, vm
 	li	a5,65536
@@ -6310,7 +6708,7 @@ w_print_str:
 	li	a5,65536
 	add	a5,a3,a5
 	sw	a4,524(a5)
-.L475:
+.L504:
 	nop
 	lw	ra,28(sp)
 	lw	s0,24(sp)
@@ -6344,7 +6742,7 @@ w_colon:
 	jr	ra
 .data
 	.align	2
-.LC22:
+.LC24:
 	.string	"EXIT"
 	.text
 	.align	2
@@ -6354,8 +6752,8 @@ w_semicolon:
 	sw	ra,12(sp)
 	sw	s0,8(sp)
 	addi	s0,sp,16
-# DELETED LUI: 	lui	a5,%hi(.LC22)
-	la a0, .LC22
+# DELETED LUI: 	lui	a5,%hi(.LC24)
+	la a0, .LC24
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
@@ -6408,7 +6806,7 @@ w_immediate:
 # DELETED LUI: 	lui	a5,%hi(dict_len)
 	la t6, dict_len
 	lw a5, 0(t6)
-	ble	a5,zero,.L482
+	ble	a5,zero,.L511
 # DELETED LUI: 	lui	a5,%hi(dict_len)
 	la t6, dict_len
 	lw a5, 0(t6)
@@ -6422,7 +6820,7 @@ w_immediate:
 	add	a5,a3,a5
 	li	a4,1
 	sw	a4,48(a5)
-.L482:
+.L511:
 	nop
 	lw	ra,12(sp)
 	lw	s0,8(sp)
@@ -6446,7 +6844,7 @@ w_tick:
 	jr	ra
 .data
 	.align	2
-.LC23:
+.LC25:
 	.string	"0BRANCH"
 	.text
 	.align	2
@@ -6456,8 +6854,8 @@ w_if:
 	sw	ra,12(sp)
 	sw	s0,8(sp)
 	addi	s0,sp,16
-# DELETED LUI: 	lui	a5,%hi(.LC23)
-	la a0, .LC23
+# DELETED LUI: 	lui	a5,%hi(.LC25)
+	la a0, .LC25
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
@@ -6500,7 +6898,7 @@ w_then:
 	jr	ra
 .data
 	.align	2
-.LC24:
+.LC26:
 	.string	"BRANCH"
 	.text
 	.align	2
@@ -6510,8 +6908,8 @@ w_else:
 	sw	ra,28(sp)
 	sw	s0,24(sp)
 	addi	s0,sp,32
-# DELETED LUI: 	lui	a5,%hi(.LC24)
-	la a0, .LC24
+# DELETED LUI: 	lui	a5,%hi(.LC26)
+	la a0, .LC26
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
@@ -6567,8 +6965,8 @@ w_until:
 	sw	ra,12(sp)
 	sw	s0,8(sp)
 	addi	s0,sp,16
-# DELETED LUI: 	lui	a5,%hi(.LC23)
-	la a0, .LC23
+# DELETED LUI: 	lui	a5,%hi(.LC25)
+	la a0, .LC25
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
@@ -6584,7 +6982,7 @@ w_until:
 	jr	ra
 .data
 	.align	2
-.LC25:
+.LC27:
 	.string	"(DO)"
 	.text
 	.align	2
@@ -6594,8 +6992,8 @@ w_do:
 	sw	ra,12(sp)
 	sw	s0,8(sp)
 	addi	s0,sp,16
-# DELETED LUI: 	lui	a5,%hi(.LC25)
-	la a0, .LC25
+# DELETED LUI: 	lui	a5,%hi(.LC27)
+	la a0, .LC27
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
@@ -6614,7 +7012,7 @@ w_do:
 	jr	ra
 .data
 	.align	2
-.LC26:
+.LC28:
 	.string	"(LOOP)"
 	.text
 	.align	2
@@ -6624,8 +7022,8 @@ w_loop:
 	sw	ra,28(sp)
 	sw	s0,24(sp)
 	addi	s0,sp,32
-# DELETED LUI: 	lui	a5,%hi(.LC26)
-	la a0, .LC26
+# DELETED LUI: 	lui	a5,%hi(.LC28)
+	la a0, .LC28
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
@@ -6641,7 +7039,7 @@ w_loop:
 	jr	ra
 .data
 	.align	2
-.LC27:
+.LC29:
 	.string	"(+LOOP)"
 	.text
 	.align	2
@@ -6651,8 +7049,8 @@ w_plus_loop:
 	sw	ra,28(sp)
 	sw	s0,24(sp)
 	addi	s0,sp,32
-# DELETED LUI: 	lui	a5,%hi(.LC27)
-	la a0, .LC27
+# DELETED LUI: 	lui	a5,%hi(.LC29)
+	la a0, .LC29
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
@@ -6673,8 +7071,8 @@ w_while:
 	sw	ra,12(sp)
 	sw	s0,8(sp)
 	addi	s0,sp,16
-# DELETED LUI: 	lui	a5,%hi(.LC23)
-	la a0, .LC23
+# DELETED LUI: 	lui	a5,%hi(.LC25)
+	la a0, .LC25
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
@@ -6704,8 +7102,8 @@ w_repeat:
 	sw	a0,-20(s0)
 	call	pop
 	sw	a0,-24(s0)
-# DELETED LUI: 	lui	a5,%hi(.LC24)
-	la a0, .LC24
+# DELETED LUI: 	lui	a5,%hi(.LC26)
+	la a0, .LC26
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
@@ -6755,16 +7153,16 @@ token_buf:
 	.space 64
 .data
 	.align	2
-.LC28:
+.LC30:
 	.string	"(.\")"
 	.align	2
-.LC29:
+.LC31:
 	.string	"Tick err\n"
 	.align	2
-.LC30:
+.LC32:
 	.string	"VARIABLE"
 	.align	2
-.LC31:
+.LC33:
 	.string	"CONSTANT"
 	.text
 	.align	2
@@ -6776,20 +7174,20 @@ eval:
 	addi	s0,sp,160
 	sw	a0,-148(s0)
 	sw	zero,-20(s0)
-	j	.L496
-.L498:
+	j	.L525
+.L527:
 	lw	a5,-20(s0)
 	lw	a4,-148(s0)
 	add	a5,a4,a5
 	lbu	a4,0(a5)
 	li	a5,10
-	beq	a4,a5,.L497
+	beq	a4,a5,.L526
 	lw	a5,-20(s0)
 	lw	a4,-148(s0)
 	add	a5,a4,a5
 	lbu	a4,0(a5)
 	li	a5,13
-	beq	a4,a5,.L497
+	beq	a4,a5,.L526
 	lw	a5,-20(s0)
 	addi	a3,a5,16
 	lw	a5,-20(s0)
@@ -6802,16 +7200,16 @@ eval:
 	lw	a5,-20(s0)
 	addi	a5,a5,1
 	sw	a5,-20(s0)
-.L496:
+.L525:
 	lw	a4,-20(s0)
 	li	a5,1022
-	bgt	a4,a5,.L497
+	bgt	a4,a5,.L526
 	lw	a5,-20(s0)
 	lw	a4,-148(s0)
 	add	a5,a4,a5
 	lbu	a5,0(a5)
-	bne	a5,zero,.L498
-.L497:
+	bne	a5,zero,.L527
+.L526:
 	lw	a5,-20(s0)
 	addi	a5,a5,16
 	li	a1,0
@@ -6823,40 +7221,40 @@ eval:
 # DELETED LUI: 	lui	a5,%hi(abort_flag)
 	la t6, abort_flag
 	sw zero, 0(t6)
-.L544:
+.L573:
 # DELETED LUI: 	lui	a5,%hi(abort_flag)
 	la t6, abort_flag
 	lw a5, 0(t6)
-	beq	a5,zero,.L499
+	beq	a5,zero,.L528
 # DELETED LUI: 	lui	a5,%hi(abort_flag)
 	la t6, abort_flag
 	sw zero, 0(t6)
-	j	.L495
-.L499:
+	j	.L524
+.L528:
 	li	a0,4
 	call	cell_fetch
 	sw	a0,-24(s0)
-.L504:
+.L533:
 	lw	a5,-24(s0)
 	addi	a5,a5,16
 	mv	a0,a5
 	call	byte_fetch
 	sw	a0,-52(s0)
 	lw	a5,-52(s0)
-	bne	a5,zero,.L501
+	bne	a5,zero,.L530
 	lw	a1,-24(s0)
 	li	a0,4
 	call	cell_store
-	j	.L495
-.L501:
+	j	.L524
+.L530:
 	lw	a4,-52(s0)
 	li	a5,32
-	bgt	a4,a5,.L546
+	bgt	a4,a5,.L575
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
-	j	.L504
-.L546:
+	j	.L533
+.L575:
 	nop
 	lw	a5,-24(s0)
 	addi	a5,a5,16
@@ -6865,46 +7263,46 @@ eval:
 	sw	a0,-56(s0)
 	lw	a4,-56(s0)
 	li	a5,40
-	bne	a4,a5,.L505
+	bne	a4,a5,.L534
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
-.L509:
+.L538:
 	lw	a5,-24(s0)
 	addi	a5,a5,16
 	mv	a0,a5
 	call	byte_fetch
 	sw	a0,-96(s0)
 	lw	a5,-96(s0)
-	beq	a5,zero,.L547
+	beq	a5,zero,.L576
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
 	lw	a4,-96(s0)
 	li	a5,41
-	beq	a4,a5,.L548
-	j	.L509
-.L547:
+	beq	a4,a5,.L577
+	j	.L538
+.L576:
 	nop
-	j	.L507
-.L548:
+	j	.L536
+.L577:
 	nop
-.L507:
+.L536:
 	lw	a1,-24(s0)
 	li	a0,4
 	call	cell_store
-	j	.L510
-.L505:
+	j	.L539
+.L534:
 	lw	a4,-56(s0)
 	li	a5,46
-	bne	a4,a5,.L511
+	bne	a4,a5,.L540
 	lw	a5,-24(s0)
 	addi	a5,a5,17
 	mv	a0,a5
 	call	byte_fetch
 	mv	a4,a0
 	li	a5,34
-	bne	a4,a5,.L511
+	bne	a4,a5,.L540
 	lw	a5,-24(s0)
 	addi	a5,a5,2
 	sw	a5,-24(s0)
@@ -6914,33 +7312,33 @@ eval:
 	call	byte_fetch
 	mv	a4,a0
 	li	a5,32
-	bne	a4,a5,.L512
+	bne	a4,a5,.L541
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
-.L512:
+.L541:
 	lw	a5,-24(s0)
 	sw	a5,-60(s0)
 	sw	zero,-28(s0)
-.L514:
+.L543:
 	lw	a5,-24(s0)
 	addi	a5,a5,16
 	mv	a0,a5
 	call	byte_fetch
 	sw	a0,-64(s0)
 	lw	a5,-64(s0)
-	beq	a5,zero,.L513
+	beq	a5,zero,.L542
 	lw	a4,-64(s0)
 	li	a5,34
-	beq	a4,a5,.L513
+	beq	a4,a5,.L542
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
 	lw	a5,-28(s0)
 	addi	a5,a5,1
 	sw	a5,-28(s0)
-	j	.L514
-.L513:
+	j	.L543
+.L542:
 	li	a0,0
 	call	cell_fetch
 	mv	a5,a0
@@ -6949,9 +7347,9 @@ eval:
 	andi	a5,a5,0xff
 	sw	a5,-68(s0)
 	lw	a5,-68(s0)
-	beq	a5,zero,.L515
-# DELETED LUI: 	lui	a5,%hi(.LC28)
-	la a0, .LC28
+	beq	a5,zero,.L544
+# DELETED LUI: 	lui	a5,%hi(.LC30)
+	la a0, .LC30
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
@@ -6959,8 +7357,8 @@ eval:
 	lw	a0,-28(s0)
 	call	comma
 	sw	zero,-32(s0)
-	j	.L516
-.L517:
+	j	.L545
+.L546:
 	lw	a5,-60(s0)
 	addi	a4,a5,16
 	lw	a5,-32(s0)
@@ -6973,24 +7371,24 @@ eval:
 	lw	a5,-32(s0)
 	addi	a5,a5,1
 	sw	a5,-32(s0)
-.L516:
+.L545:
 	lw	a4,-32(s0)
 	lw	a5,-28(s0)
-	blt	a4,a5,.L517
+	blt	a4,a5,.L546
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a4, vm
 	li	a5,65536
 	add	a5,a4,a5
 	lw	a5,520(a5)
 	andi	a5,a5,1
-	beq	a5,zero,.L518
+	beq	a5,zero,.L547
 	li	a0,0
 	call	c_comma
-	j	.L518
-.L515:
+	j	.L547
+.L544:
 	sw	zero,-36(s0)
-	j	.L519
-.L520:
+	j	.L548
+.L549:
 	lw	a5,-60(s0)
 	addi	a4,a5,16
 	lw	a5,-36(s0)
@@ -7014,43 +7412,43 @@ eval:
 	lw	a5,-36(s0)
 	addi	a5,a5,1
 	sw	a5,-36(s0)
-.L519:
+.L548:
 	lw	a4,-36(s0)
 	lw	a5,-28(s0)
-	blt	a4,a5,.L520
-.L518:
+	blt	a4,a5,.L549
+.L547:
 	lw	a5,-24(s0)
 	addi	a5,a5,16
 	mv	a0,a5
 	call	byte_fetch
 	mv	a4,a0
 	li	a5,34
-	bne	a4,a5,.L521
+	bne	a4,a5,.L550
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
-.L521:
+.L550:
 	lw	a1,-24(s0)
 	li	a0,4
 	call	cell_store
-	j	.L510
-.L511:
+	j	.L539
+.L540:
 	sw	zero,-40(s0)
 	sw	zero,-44(s0)
-.L525:
+.L554:
 	lw	a5,-24(s0)
 	addi	a5,a5,16
 	mv	a0,a5
 	call	byte_fetch
 	sw	a0,-72(s0)
 	lw	a5,-72(s0)
-	beq	a5,zero,.L522
+	beq	a5,zero,.L551
 	lw	a4,-72(s0)
 	li	a5,32
-	ble	a4,a5,.L522
+	ble	a4,a5,.L551
 	lw	a4,-40(s0)
 	li	a5,30
-	bgt	a4,a5,.L523
+	bgt	a4,a5,.L552
 	lw	a5,-40(s0)
 	addi	a4,a5,1
 	sw	a4,-40(s0)
@@ -7060,19 +7458,19 @@ eval:
 	la a3, token_buf
 	add	a5,a3,a5
 	sb	a4,0(a5)
-.L523:
+.L552:
 	lw	a4,-44(s0)
 	li	a5,254
-	bgt	a4,a5,.L524
+	bgt	a4,a5,.L553
 	lw	a5,-44(s0)
 	addi	a5,a5,1
 	sw	a5,-44(s0)
-.L524:
+.L553:
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
-	j	.L525
-.L522:
+	j	.L554
+.L551:
 # DELETED LUI: 	lui	a5,%hi(token_buf)
 	la a4, token_buf
 	lw	a5,-40(s0)
@@ -7083,11 +7481,11 @@ eval:
 	mv	a0,a5
 	call	byte_fetch
 	mv	a5,a0
-	beq	a5,zero,.L526
+	beq	a5,zero,.L555
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
-.L526:
+.L555:
 	lw	a1,-24(s0)
 	li	a0,4
 	call	cell_store
@@ -7101,7 +7499,7 @@ eval:
 # DELETED LUI: 	lui	a5,%hi(tick_pending)
 	la t6, tick_pending
 	lw a5, 0(t6)
-	beq	a5,zero,.L527
+	beq	a5,zero,.L556
 	lw	a1,-44(s0)
 # DELETED LUI: 	lui	a5,%hi(token_buf)
 	la a0, token_buf
@@ -7109,7 +7507,7 @@ eval:
 	sw	a0,-92(s0)
 	lw	a4,-92(s0)
 	li	a5,-1
-	beq	a4,a5,.L528
+	beq	a4,a5,.L557
 # DELETED LUI: 	lui	a5,%hi(dict)
 	la a3, dict
 	lw	a4,-92(s0)
@@ -7119,7 +7517,7 @@ eval:
 	slli	a5,a5,2
 	add	a5,a3,a5
 	lw	a5,52(a5)
-	beq	a5,zero,.L529
+	beq	a5,zero,.L558
 # DELETED LUI: 	lui	a5,%hi(dict)
 	la a3, dict
 	lw	a4,-92(s0)
@@ -7130,29 +7528,29 @@ eval:
 	add	a5,a3,a5
 	lw	a5,40(a5)
 	sw	a5,-48(s0)
-	j	.L530
-.L529:
+	j	.L559
+.L558:
 	lw	a5,-92(s0)
 	sw	a5,-48(s0)
-.L530:
+.L559:
 	lw	a5,-76(s0)
-	beq	a5,zero,.L531
-# DELETED LUI: 	lui	a5,%hi(.LC20)
-	la a0, .LC20
+	beq	a5,zero,.L560
+# DELETED LUI: 	lui	a5,%hi(.LC22)
+	la a0, .LC22
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
 	call	comma
 	lw	a0,-48(s0)
 	call	comma
-	j	.L532
-.L531:
+	j	.L561
+.L560:
 	lw	a0,-48(s0)
 	call	push
-	j	.L532
-.L528:
-# DELETED LUI: 	lui	a5,%hi(.LC29)
-	la a5, .LC29
+	j	.L561
+.L557:
+# DELETED LUI: 	lui	a5,%hi(.LC31)
+	la a5, .LC31
 	sw	a5,-108(s0)
 	lw	a5,-108(s0)
 	sw	a5,-112(s0)
@@ -7165,21 +7563,21 @@ eval:
 # 0 "" 2
  #NO_APP
 	nop
-.L532:
+.L561:
 # DELETED LUI: 	lui	a5,%hi(tick_pending)
 	la t6, tick_pending
 	sw zero, 0(t6)
-	j	.L544
-.L527:
+	j	.L573
+.L556:
 # DELETED LUI: 	lui	a5,%hi(mode_var)
 	la t6, mode_var
 	lw a5, 0(t6)
-	ble	a5,zero,.L533
+	ble	a5,zero,.L562
 # DELETED LUI: 	lui	a5,%hi(mode_var)
 	la t6, mode_var
 	lw a4, 0(t6)
 	li	a5,1
-	bne	a4,a5,.L534
+	bne	a4,a5,.L563
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a4, vm
 	li	a5,65536
@@ -7224,12 +7622,12 @@ eval:
 	li	a5,65536
 	add	a5,a3,a5
 	sw	a4,520(a5)
-.L534:
+.L563:
 # DELETED LUI: 	lui	a5,%hi(mode_var)
 	la t6, mode_var
 	lw a4, 0(t6)
 	li	a5,2
-	bne	a4,a5,.L535
+	bne	a4,a5,.L564
 	call	pop
 	sw	a0,-88(s0)
 # DELETED LUI: 	lui	a5,%hi(vm)
@@ -7276,16 +7674,16 @@ eval:
 	li	a5,65536
 	add	a5,a3,a5
 	sw	a4,520(a5)
-.L535:
+.L564:
 # DELETED LUI: 	lui	a5,%hi(mode_var)
 	la t6, mode_var
 	sw zero, 0(t6)
-	j	.L544
-.L533:
+	j	.L573
+.L562:
 # DELETED LUI: 	lui	a5,%hi(creating_word)
 	la t6, creating_word
 	lw a5, 0(t6)
-	beq	a5,zero,.L536
+	beq	a5,zero,.L565
 # DELETED LUI: 	lui	a5,%hi(vm)
 	la a4, vm
 	li	a5,65536
@@ -7304,44 +7702,44 @@ eval:
 	li	a1,1
 	li	a0,0
 	call	cell_store
-	j	.L544
-.L536:
+	j	.L573
+.L565:
 	lw	a1,-44(s0)
 # DELETED LUI: 	lui	a5,%hi(token_buf)
 	la a0, token_buf
 	call	find_id_lv
 	sw	a0,-80(s0)
-# DELETED LUI: 	lui	a5,%hi(.LC30)
-	la a1, .LC30
+# DELETED LUI: 	lui	a5,%hi(.LC32)
+	la a1, .LC32
 # DELETED LUI: 	lui	a5,%hi(token_buf)
 	la a0, token_buf
 	call	my_strcmp
 	mv	a5,a0
-	bne	a5,zero,.L537
+	bne	a5,zero,.L566
 # DELETED LUI: 	lui	a5,%hi(mode_var)
 	li	a4,1
 	la t6, mode_var
 	sw a4, 0(t6)
-	j	.L544
-.L537:
-# DELETED LUI: 	lui	a5,%hi(.LC31)
-	la a1, .LC31
+	j	.L573
+.L566:
+# DELETED LUI: 	lui	a5,%hi(.LC33)
+	la a1, .LC33
 # DELETED LUI: 	lui	a5,%hi(token_buf)
 	la a0, token_buf
 	call	my_strcmp
 	mv	a5,a0
-	bne	a5,zero,.L538
+	bne	a5,zero,.L567
 # DELETED LUI: 	lui	a5,%hi(mode_var)
 	li	a4,2
 	la t6, mode_var
 	sw a4, 0(t6)
-	j	.L544
-.L538:
+	j	.L573
+.L567:
 	lw	a4,-80(s0)
 	li	a5,-1
-	beq	a4,a5,.L539
+	beq	a4,a5,.L568
 	lw	a5,-76(s0)
-	beq	a5,zero,.L540
+	beq	a5,zero,.L569
 # DELETED LUI: 	lui	a5,%hi(dict)
 	la a3, dict
 	lw	a4,-80(s0)
@@ -7351,40 +7749,40 @@ eval:
 	slli	a5,a5,2
 	add	a5,a3,a5
 	lw	a5,48(a5)
-	bne	a5,zero,.L540
+	bne	a5,zero,.L569
 	lw	a0,-80(s0)
 	call	comma
-	j	.L510
-.L540:
+	j	.L539
+.L569:
 	lw	a0,-80(s0)
 	call	execute_dict
-	j	.L544
-.L539:
+	j	.L573
+.L568:
 # DELETED LUI: 	lui	a5,%hi(token_buf)
 	la a0, token_buf
 	call	is_number
 	mv	a5,a0
-	beq	a5,zero,.L542
+	beq	a5,zero,.L571
 # DELETED LUI: 	lui	a5,%hi(token_buf)
 	la a0, token_buf
 	call	my_atoi
 	sw	a0,-84(s0)
 	lw	a5,-76(s0)
-	beq	a5,zero,.L543
-# DELETED LUI: 	lui	a5,%hi(.LC20)
-	la a0, .LC20
+	beq	a5,zero,.L572
+# DELETED LUI: 	lui	a5,%hi(.LC22)
+	la a0, .LC22
 	call	find_id
 	mv	a5,a0
 	mv	a0,a5
 	call	comma
 	lw	a0,-84(s0)
 	call	comma
-	j	.L544
-.L543:
+	j	.L573
+.L572:
 	lw	a0,-84(s0)
 	call	push
-	j	.L544
-.L542:
+	j	.L573
+.L571:
 # DELETED LUI: 	lui	a5,%hi(.LC11)
 	la a5, .LC11
 	sw	a5,-132(s0)
@@ -7427,9 +7825,9 @@ eval:
 # 0 "" 2
  #NO_APP
 	nop
-.L510:
-	j	.L544
-.L495:
+.L539:
+	j	.L573
+.L524:
 	lw	ra,156(sp)
 	lw	s0,152(sp)
 	addi	sp,sp,160
@@ -7441,397 +7839,403 @@ input_buffer:
 	.space 512
 .data
 	.align	2
-.LC32:
+.LC34:
 	.string	"+"
 	.align	2
-.LC33:
+.LC35:
 	.string	"-"
 	.align	2
-.LC34:
+.LC36:
 	.string	"*"
 	.align	2
-.LC35:
+.LC37:
 	.string	"/"
 	.align	2
-.LC36:
+.LC38:
 	.string	"MOD"
 	.align	2
-.LC37:
+.LC39:
 	.string	"/MOD"
 	.align	2
-.LC38:
+.LC40:
 	.string	"*/"
 	.align	2
-.LC39:
+.LC41:
 	.string	"*/MOD"
 	.align	2
-.LC40:
+.LC42:
 	.string	"1+"
 	.align	2
-.LC41:
+.LC43:
 	.string	"1-"
 	.align	2
-.LC42:
+.LC44:
 	.string	"2+"
 	.align	2
-.LC43:
+.LC45:
 	.string	"2-"
 	.align	2
-.LC44:
+.LC46:
 	.string	"ABS"
 	.align	2
-.LC45:
+.LC47:
 	.string	"NEGATE"
 	.align	2
-.LC46:
+.LC48:
 	.string	"MIN"
 	.align	2
-.LC47:
+.LC49:
 	.string	"MAX"
 	.align	2
-.LC48:
+.LC50:
 	.string	"0="
 	.align	2
-.LC49:
+.LC51:
 	.string	"NOT"
 	.align	2
-.LC50:
+.LC52:
 	.string	"0<"
 	.align	2
-.LC51:
+.LC53:
 	.string	"0>"
 	.align	2
-.LC52:
+.LC54:
 	.string	"AND"
 	.align	2
-.LC53:
+.LC55:
 	.string	"OR"
 	.align	2
-.LC54:
+.LC56:
 	.string	"XOR"
 	.align	2
-.LC55:
+.LC57:
 	.string	"U<"
 	.align	2
-.LC56:
+.LC58:
 	.string	"U*"
 	.align	2
-.LC57:
+.LC59:
 	.string	"U/MOD"
 	.align	2
-.LC58:
+.LC60:
 	.string	">R"
 	.align	2
-.LC59:
+.LC61:
 	.string	"R>"
 	.align	2
-.LC60:
+.LC62:
 	.string	"R@"
 	.align	2
-.LC61:
+.LC63:
 	.string	"?DUP"
 	.align	2
-.LC62:
+.LC64:
 	.string	"PICK"
 	.align	2
-.LC63:
+.LC65:
 	.string	"ROLL"
 	.align	2
-.LC64:
+.LC66:
 	.string	"+!"
 	.align	2
-.LC65:
+.LC67:
 	.string	"CMOVE"
 	.align	2
-.LC66:
+.LC68:
 	.string	"MOVE"
 	.align	2
-.LC67:
+.LC69:
 	.string	"FILL"
 	.align	2
-.LC68:
+.LC70:
 	.string	"COUNT"
 	.align	2
-.LC69:
+.LC71:
 	.string	"TYPE"
 	.align	2
-.LC70:
+.LC72:
 	.string	"-TRAILING"
 	.align	2
-.LC71:
+.LC73:
 	.string	"WORD"
 	.align	2
-.LC72:
+.LC74:
 	.string	"FIND"
 	.align	2
-.LC73:
+.LC75:
 	.string	"EXPECT"
 	.align	2
-.LC74:
+.LC76:
 	.string	"QUERY"
 	.align	2
-.LC75:
+.LC77:
 	.string	"ABORT"
 	.align	2
-.LC76:
+.LC78:
 	.string	"QUIT"
 	.align	2
-.LC77:
+.LC79:
 	.string	"BL"
 	.align	2
-.LC78:
+.LC80:
 	.string	"CREATE"
 	.align	2
-.LC79:
+.LC81:
 	.string	"DOES>"
 	.align	2
-.LC80:
+.LC82:
 	.string	"COMPILE"
 	.align	2
-.LC81:
+.LC83:
 	.string	"[COMPILE]"
 	.align	2
-.LC82:
+.LC84:
 	.string	"FORGET"
 	.align	2
-.LC83:
+.LC85:
 	.string	"D+"
 	.align	2
-.LC84:
+.LC86:
 	.string	"D<"
 	.align	2
-.LC85:
+.LC87:
 	.string	"DNEGATE"
 	.align	2
-.LC86:
+.LC88:
 	.string	"<#"
 	.align	2
-.LC87:
+.LC89:
 	.string	"#"
 	.align	2
-.LC88:
+.LC90:
 	.string	"#S"
 	.align	2
-.LC89:
+.LC91:
 	.string	"#>"
 	.align	2
-.LC90:
+.LC92:
 	.string	"HOLD"
 	.align	2
-.LC91:
+.LC93:
 	.string	"SIGN"
 	.align	2
-.LC92:
+.LC94:
 	.string	"CONVERT"
 	.align	2
-.LC93:
+.LC95:
 	.string	"CONTEXT"
 	.align	2
-.LC94:
+.LC96:
 	.string	"CURRENT"
 	.align	2
-.LC95:
+.LC97:
 	.string	"VOCABULARY"
 	.align	2
-.LC96:
+.LC98:
 	.string	"DEFINITIONS"
 	.align	2
-.LC97:
+.LC99:
 	.string	"FORTH"
 	.align	2
-.LC98:
+.LC100:
 	.string	"BLOCK"
 	.align	2
-.LC99:
+.LC101:
 	.string	"BUFFER"
 	.align	2
-.LC100:
+.LC102:
 	.string	"UPDATE"
 	.align	2
-.LC101:
+.LC103:
 	.string	"EMPTY-BUFFERS"
 	.align	2
-.LC102:
+.LC104:
 	.string	"SAVE-BUFFERS"
 	.align	2
-.LC103:
+.LC105:
 	.string	"LIST"
 	.align	2
-.LC104:
+.LC106:
 	.string	"LOAD"
 	.align	2
-.LC105:
+.LC107:
 	.string	"79-STANDARD"
 	.align	2
-.LC106:
+.LC108:
 	.string	"DUP"
 	.align	2
-.LC107:
+.LC109:
 	.string	"DROP"
 	.align	2
-.LC108:
+.LC110:
 	.string	"SWAP"
 	.align	2
-.LC109:
+.LC111:
 	.string	"OVER"
 	.align	2
-.LC110:
+.LC112:
 	.string	"ROT"
 	.align	2
-.LC111:
-	.string	"."
-	.align	2
-.LC112:
-	.string	"U."
-	.align	2
 .LC113:
-	.string	"CR"
+	.string	".S"
 	.align	2
 .LC114:
-	.string	"EMIT"
+	.string	"INCLUDE"
 	.align	2
 .LC115:
-	.string	"KEY"
+	.string	"."
 	.align	2
 .LC116:
-	.string	"SPACE"
+	.string	"U."
 	.align	2
 .LC117:
-	.string	"SPACES"
+	.string	"CR"
 	.align	2
 .LC118:
-	.string	"HEX"
+	.string	"EMIT"
 	.align	2
 .LC119:
-	.string	"?"
+	.string	"KEY"
 	.align	2
 .LC120:
-	.string	"="
+	.string	"SPACE"
 	.align	2
 .LC121:
-	.string	">"
+	.string	"SPACES"
 	.align	2
 .LC122:
-	.string	"<"
+	.string	"HEX"
 	.align	2
 .LC123:
-	.string	"!"
+	.string	"?"
 	.align	2
 .LC124:
-	.string	"@"
+	.string	"="
 	.align	2
 .LC125:
-	.string	"C!"
+	.string	">"
 	.align	2
 .LC126:
-	.string	"C@"
+	.string	"<"
 	.align	2
 .LC127:
-	.string	"HERE"
+	.string	"!"
 	.align	2
 .LC128:
-	.string	"ALLOT"
+	.string	"@"
 	.align	2
 .LC129:
-	.string	","
+	.string	"C!"
 	.align	2
 .LC130:
-	.string	"C,"
+	.string	"C@"
 	.align	2
 .LC131:
-	.string	"LITERAL"
+	.string	"HERE"
 	.align	2
 .LC132:
-	.string	"STATE"
+	.string	"ALLOT"
 	.align	2
 .LC133:
-	.string	"BASE"
+	.string	","
 	.align	2
 .LC134:
-	.string	">IN"
+	.string	"C,"
 	.align	2
 .LC135:
-	.string	"BLK"
+	.string	"LITERAL"
 	.align	2
 .LC136:
-	.string	"SCR"
+	.string	"STATE"
 	.align	2
 .LC137:
-	.string	"PAD"
+	.string	"BASE"
 	.align	2
 .LC138:
-	.string	"DECIMAL"
+	.string	">IN"
 	.align	2
 .LC139:
-	.string	"DEPTH"
+	.string	"BLK"
 	.align	2
 .LC140:
-	.string	"BYE"
+	.string	"SCR"
 	.align	2
 .LC141:
-	.string	"EXECUTE"
+	.string	"PAD"
 	.align	2
 .LC142:
-	.string	":"
+	.string	"DECIMAL"
 	.align	2
 .LC143:
-	.string	";"
+	.string	"DEPTH"
 	.align	2
 .LC144:
-	.string	"IF"
+	.string	"BYE"
 	.align	2
 .LC145:
-	.string	"THEN"
+	.string	"EXECUTE"
 	.align	2
 .LC146:
-	.string	"ELSE"
+	.string	":"
 	.align	2
 .LC147:
-	.string	"BEGIN"
+	.string	";"
 	.align	2
 .LC148:
-	.string	"UNTIL"
+	.string	"IF"
 	.align	2
 .LC149:
-	.string	"WHILE"
+	.string	"THEN"
 	.align	2
 .LC150:
-	.string	"REPEAT"
+	.string	"ELSE"
 	.align	2
 .LC151:
-	.string	"DO"
+	.string	"BEGIN"
 	.align	2
 .LC152:
-	.string	"LOOP"
+	.string	"UNTIL"
 	.align	2
 .LC153:
-	.string	"+LOOP"
+	.string	"WHILE"
 	.align	2
 .LC154:
-	.string	"I"
+	.string	"REPEAT"
 	.align	2
 .LC155:
-	.string	"J"
+	.string	"DO"
 	.align	2
 .LC156:
-	.string	"LEAVE"
+	.string	"LOOP"
 	.align	2
 .LC157:
-	.string	"RECURSE"
+	.string	"+LOOP"
 	.align	2
 .LC158:
-	.string	"'"
+	.string	"I"
 	.align	2
 .LC159:
-	.string	"IMMEDIATE"
+	.string	"J"
 	.align	2
 .LC160:
-	.string	"["
+	.string	"LEAVE"
 	.align	2
 .LC161:
-	.string	"]"
+	.string	"RECURSE"
 	.align	2
 .LC162:
+	.string	"'"
+	.align	2
+.LC163:
+	.string	"IMMEDIATE"
+	.align	2
+.LC164:
+	.string	"["
+	.align	2
+.LC165:
+	.string	"]"
+	.align	2
+.LC166:
 	.string	"ok> "
 	.text
 	.align	2
@@ -7847,462 +8251,462 @@ main:
 	li	a2,-1
 # DELETED LUI: 	lui	a5,%hi(w_add)
 	la a1, w_add
-# DELETED LUI: 	lui	a5,%hi(.LC32)
-	la a0, .LC32
-	call	create_word
-	li	a3,0
-	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_sub)
-	la a1, w_sub
-# DELETED LUI: 	lui	a5,%hi(.LC33)
-	la a0, .LC33
-	call	create_word
-	li	a3,0
-	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_mul)
-	la a1, w_mul
 # DELETED LUI: 	lui	a5,%hi(.LC34)
 	la a0, .LC34
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_div)
-	la a1, w_div
+# DELETED LUI: 	lui	a5,%hi(w_sub)
+	la a1, w_sub
 # DELETED LUI: 	lui	a5,%hi(.LC35)
 	la a0, .LC35
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_mod)
-	la a1, w_mod
+# DELETED LUI: 	lui	a5,%hi(w_mul)
+	la a1, w_mul
 # DELETED LUI: 	lui	a5,%hi(.LC36)
 	la a0, .LC36
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_div_mod)
-	la a1, w_div_mod
+# DELETED LUI: 	lui	a5,%hi(w_div)
+	la a1, w_div
 # DELETED LUI: 	lui	a5,%hi(.LC37)
 	la a0, .LC37
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_mul_div)
-	la a1, w_mul_div
+# DELETED LUI: 	lui	a5,%hi(w_mod)
+	la a1, w_mod
 # DELETED LUI: 	lui	a5,%hi(.LC38)
 	la a0, .LC38
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_mul_div_mod)
-	la a1, w_mul_div_mod
+# DELETED LUI: 	lui	a5,%hi(w_div_mod)
+	la a1, w_div_mod
 # DELETED LUI: 	lui	a5,%hi(.LC39)
 	la a0, .LC39
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_one_plus)
-	la a1, w_one_plus
+# DELETED LUI: 	lui	a5,%hi(w_mul_div)
+	la a1, w_mul_div
 # DELETED LUI: 	lui	a5,%hi(.LC40)
 	la a0, .LC40
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_one_minus)
-	la a1, w_one_minus
+# DELETED LUI: 	lui	a5,%hi(w_mul_div_mod)
+	la a1, w_mul_div_mod
 # DELETED LUI: 	lui	a5,%hi(.LC41)
 	la a0, .LC41
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_two_plus)
-	la a1, w_two_plus
+# DELETED LUI: 	lui	a5,%hi(w_one_plus)
+	la a1, w_one_plus
 # DELETED LUI: 	lui	a5,%hi(.LC42)
 	la a0, .LC42
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_two_minus)
-	la a1, w_two_minus
+# DELETED LUI: 	lui	a5,%hi(w_one_minus)
+	la a1, w_one_minus
 # DELETED LUI: 	lui	a5,%hi(.LC43)
 	la a0, .LC43
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_abs)
-	la a1, w_abs
+# DELETED LUI: 	lui	a5,%hi(w_two_plus)
+	la a1, w_two_plus
 # DELETED LUI: 	lui	a5,%hi(.LC44)
 	la a0, .LC44
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_negate)
-	la a1, w_negate
+# DELETED LUI: 	lui	a5,%hi(w_two_minus)
+	la a1, w_two_minus
 # DELETED LUI: 	lui	a5,%hi(.LC45)
 	la a0, .LC45
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_min)
-	la a1, w_min
+# DELETED LUI: 	lui	a5,%hi(w_abs)
+	la a1, w_abs
 # DELETED LUI: 	lui	a5,%hi(.LC46)
 	la a0, .LC46
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_max)
-	la a1, w_max
+# DELETED LUI: 	lui	a5,%hi(w_negate)
+	la a1, w_negate
 # DELETED LUI: 	lui	a5,%hi(.LC47)
 	la a0, .LC47
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_zero_eq)
-	la a1, w_zero_eq
+# DELETED LUI: 	lui	a5,%hi(w_min)
+	la a1, w_min
 # DELETED LUI: 	lui	a5,%hi(.LC48)
 	la a0, .LC48
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_zero_eq)
-	la a1, w_zero_eq
+# DELETED LUI: 	lui	a5,%hi(w_max)
+	la a1, w_max
 # DELETED LUI: 	lui	a5,%hi(.LC49)
 	la a0, .LC49
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_zero_lt)
-	la a1, w_zero_lt
+# DELETED LUI: 	lui	a5,%hi(w_zero_eq)
+	la a1, w_zero_eq
 # DELETED LUI: 	lui	a5,%hi(.LC50)
 	la a0, .LC50
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_zero_gt)
-	la a1, w_zero_gt
+# DELETED LUI: 	lui	a5,%hi(w_zero_eq)
+	la a1, w_zero_eq
 # DELETED LUI: 	lui	a5,%hi(.LC51)
 	la a0, .LC51
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_and)
-	la a1, w_and
+# DELETED LUI: 	lui	a5,%hi(w_zero_lt)
+	la a1, w_zero_lt
 # DELETED LUI: 	lui	a5,%hi(.LC52)
 	la a0, .LC52
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_or)
-	la a1, w_or
+# DELETED LUI: 	lui	a5,%hi(w_zero_gt)
+	la a1, w_zero_gt
 # DELETED LUI: 	lui	a5,%hi(.LC53)
 	la a0, .LC53
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_xor)
-	la a1, w_xor
+# DELETED LUI: 	lui	a5,%hi(w_and)
+	la a1, w_and
 # DELETED LUI: 	lui	a5,%hi(.LC54)
 	la a0, .LC54
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_u_lt)
-	la a1, w_u_lt
+# DELETED LUI: 	lui	a5,%hi(w_or)
+	la a1, w_or
 # DELETED LUI: 	lui	a5,%hi(.LC55)
 	la a0, .LC55
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_u_mul)
-	la a1, w_u_mul
+# DELETED LUI: 	lui	a5,%hi(w_xor)
+	la a1, w_xor
 # DELETED LUI: 	lui	a5,%hi(.LC56)
 	la a0, .LC56
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_u_div_mod)
-	la a1, w_u_div_mod
+# DELETED LUI: 	lui	a5,%hi(w_u_lt)
+	la a1, w_u_lt
 # DELETED LUI: 	lui	a5,%hi(.LC57)
 	la a0, .LC57
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_to_r)
-	la a1, w_to_r
+# DELETED LUI: 	lui	a5,%hi(w_u_mul)
+	la a1, w_u_mul
 # DELETED LUI: 	lui	a5,%hi(.LC58)
 	la a0, .LC58
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_r_from)
-	la a1, w_r_from
+# DELETED LUI: 	lui	a5,%hi(w_u_div_mod)
+	la a1, w_u_div_mod
 # DELETED LUI: 	lui	a5,%hi(.LC59)
 	la a0, .LC59
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_r_fetch)
-	la a1, w_r_fetch
+# DELETED LUI: 	lui	a5,%hi(w_to_r)
+	la a1, w_to_r
 # DELETED LUI: 	lui	a5,%hi(.LC60)
 	la a0, .LC60
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_q_dup)
-	la a1, w_q_dup
+# DELETED LUI: 	lui	a5,%hi(w_r_from)
+	la a1, w_r_from
 # DELETED LUI: 	lui	a5,%hi(.LC61)
 	la a0, .LC61
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_pick)
-	la a1, w_pick
+# DELETED LUI: 	lui	a5,%hi(w_r_fetch)
+	la a1, w_r_fetch
 # DELETED LUI: 	lui	a5,%hi(.LC62)
 	la a0, .LC62
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_roll)
-	la a1, w_roll
+# DELETED LUI: 	lui	a5,%hi(w_q_dup)
+	la a1, w_q_dup
 # DELETED LUI: 	lui	a5,%hi(.LC63)
 	la a0, .LC63
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_plus_store)
-	la a1, w_plus_store
+# DELETED LUI: 	lui	a5,%hi(w_pick)
+	la a1, w_pick
 # DELETED LUI: 	lui	a5,%hi(.LC64)
 	la a0, .LC64
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_cmove)
-	la a1, w_cmove
+# DELETED LUI: 	lui	a5,%hi(w_roll)
+	la a1, w_roll
 # DELETED LUI: 	lui	a5,%hi(.LC65)
 	la a0, .LC65
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_move)
-	la a1, w_move
+# DELETED LUI: 	lui	a5,%hi(w_plus_store)
+	la a1, w_plus_store
 # DELETED LUI: 	lui	a5,%hi(.LC66)
 	la a0, .LC66
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_fill)
-	la a1, w_fill
+# DELETED LUI: 	lui	a5,%hi(w_cmove)
+	la a1, w_cmove
 # DELETED LUI: 	lui	a5,%hi(.LC67)
 	la a0, .LC67
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_count)
-	la a1, w_count
+# DELETED LUI: 	lui	a5,%hi(w_move)
+	la a1, w_move
 # DELETED LUI: 	lui	a5,%hi(.LC68)
 	la a0, .LC68
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_type)
-	la a1, w_type
+# DELETED LUI: 	lui	a5,%hi(w_fill)
+	la a1, w_fill
 # DELETED LUI: 	lui	a5,%hi(.LC69)
 	la a0, .LC69
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_dash_trailing)
-	la a1, w_dash_trailing
+# DELETED LUI: 	lui	a5,%hi(w_count)
+	la a1, w_count
 # DELETED LUI: 	lui	a5,%hi(.LC70)
 	la a0, .LC70
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_word)
-	la a1, w_word
+# DELETED LUI: 	lui	a5,%hi(w_type)
+	la a1, w_type
 # DELETED LUI: 	lui	a5,%hi(.LC71)
 	la a0, .LC71
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_find)
-	la a1, w_find
+# DELETED LUI: 	lui	a5,%hi(w_dash_trailing)
+	la a1, w_dash_trailing
 # DELETED LUI: 	lui	a5,%hi(.LC72)
 	la a0, .LC72
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_expect)
-	la a1, w_expect
+# DELETED LUI: 	lui	a5,%hi(w_word)
+	la a1, w_word
 # DELETED LUI: 	lui	a5,%hi(.LC73)
 	la a0, .LC73
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_query)
-	la a1, w_query
+# DELETED LUI: 	lui	a5,%hi(w_find)
+	la a1, w_find
 # DELETED LUI: 	lui	a5,%hi(.LC74)
 	la a0, .LC74
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_abort)
-	la a1, w_abort
+# DELETED LUI: 	lui	a5,%hi(w_expect)
+	la a1, w_expect
 # DELETED LUI: 	lui	a5,%hi(.LC75)
 	la a0, .LC75
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_quit_word)
-	la a1, w_quit_word
+# DELETED LUI: 	lui	a5,%hi(w_query)
+	la a1, w_query
 # DELETED LUI: 	lui	a5,%hi(.LC76)
 	la a0, .LC76
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_bl)
-	la a1, w_bl
+# DELETED LUI: 	lui	a5,%hi(w_abort)
+	la a1, w_abort
 # DELETED LUI: 	lui	a5,%hi(.LC77)
 	la a0, .LC77
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_create)
-	la a1, w_create
+# DELETED LUI: 	lui	a5,%hi(w_quit_word)
+	la a1, w_quit_word
 # DELETED LUI: 	lui	a5,%hi(.LC78)
 	la a0, .LC78
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_does)
-	la a1, w_does
+# DELETED LUI: 	lui	a5,%hi(w_bl)
+	la a1, w_bl
 # DELETED LUI: 	lui	a5,%hi(.LC79)
 	la a0, .LC79
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_compile)
-	la a1, w_compile
+# DELETED LUI: 	lui	a5,%hi(w_create)
+	la a1, w_create
 # DELETED LUI: 	lui	a5,%hi(.LC80)
 	la a0, .LC80
 	call	create_word
-	li	a3,1
+	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_bracket_compile)
-	la a1, w_bracket_compile
+# DELETED LUI: 	lui	a5,%hi(w_does)
+	la a1, w_does
 # DELETED LUI: 	lui	a5,%hi(.LC81)
 	la a0, .LC81
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_forget)
-	la a1, w_forget
+# DELETED LUI: 	lui	a5,%hi(w_compile)
+	la a1, w_compile
 # DELETED LUI: 	lui	a5,%hi(.LC82)
 	la a0, .LC82
 	call	create_word
-	li	a3,0
+	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_d_plus)
-	la a1, w_d_plus
+# DELETED LUI: 	lui	a5,%hi(w_bracket_compile)
+	la a1, w_bracket_compile
 # DELETED LUI: 	lui	a5,%hi(.LC83)
 	la a0, .LC83
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_d_lt)
-	la a1, w_d_lt
+# DELETED LUI: 	lui	a5,%hi(w_forget)
+	la a1, w_forget
 # DELETED LUI: 	lui	a5,%hi(.LC84)
 	la a0, .LC84
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_d_negate)
-	la a1, w_d_negate
+# DELETED LUI: 	lui	a5,%hi(w_d_plus)
+	la a1, w_d_plus
 # DELETED LUI: 	lui	a5,%hi(.LC85)
 	la a0, .LC85
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_less_sharp)
-	la a1, w_less_sharp
+# DELETED LUI: 	lui	a5,%hi(w_d_lt)
+	la a1, w_d_lt
 # DELETED LUI: 	lui	a5,%hi(.LC86)
 	la a0, .LC86
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_sharp)
-	la a1, w_sharp
+# DELETED LUI: 	lui	a5,%hi(w_d_negate)
+	la a1, w_d_negate
 # DELETED LUI: 	lui	a5,%hi(.LC87)
 	la a0, .LC87
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_sharp_s)
-	la a1, w_sharp_s
+# DELETED LUI: 	lui	a5,%hi(w_less_sharp)
+	la a1, w_less_sharp
 # DELETED LUI: 	lui	a5,%hi(.LC88)
 	la a0, .LC88
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_sharp_greater)
-	la a1, w_sharp_greater
+# DELETED LUI: 	lui	a5,%hi(w_sharp)
+	la a1, w_sharp
 # DELETED LUI: 	lui	a5,%hi(.LC89)
 	la a0, .LC89
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_hold)
-	la a1, w_hold
+# DELETED LUI: 	lui	a5,%hi(w_sharp_s)
+	la a1, w_sharp_s
 # DELETED LUI: 	lui	a5,%hi(.LC90)
 	la a0, .LC90
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_sign)
-	la a1, w_sign
+# DELETED LUI: 	lui	a5,%hi(w_sharp_greater)
+	la a1, w_sharp_greater
 # DELETED LUI: 	lui	a5,%hi(.LC91)
 	la a0, .LC91
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_convert)
-	la a1, w_convert
+# DELETED LUI: 	lui	a5,%hi(w_hold)
+	la a1, w_hold
 # DELETED LUI: 	lui	a5,%hi(.LC92)
 	la a0, .LC92
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_context)
-	la a1, w_context
+# DELETED LUI: 	lui	a5,%hi(w_sign)
+	la a1, w_sign
 # DELETED LUI: 	lui	a5,%hi(.LC93)
 	la a0, .LC93
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_current)
-	la a1, w_current
+# DELETED LUI: 	lui	a5,%hi(w_convert)
+	la a1, w_convert
 # DELETED LUI: 	lui	a5,%hi(.LC94)
 	la a0, .LC94
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_vocabulary)
-	la a1, w_vocabulary
+# DELETED LUI: 	lui	a5,%hi(w_context)
+	la a1, w_context
 # DELETED LUI: 	lui	a5,%hi(.LC95)
 	la a0, .LC95
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_definitions)
-	la a1, w_definitions
+# DELETED LUI: 	lui	a5,%hi(w_current)
+	la a1, w_current
 # DELETED LUI: 	lui	a5,%hi(.LC96)
 	la a0, .LC96
 	call	create_word
 	li	a3,0
-	li	a2,0
-	li	a1,0
+	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_vocabulary)
+	la a1, w_vocabulary
 # DELETED LUI: 	lui	a5,%hi(.LC97)
 	la a0, .LC97
+	call	create_word
+	li	a3,0
+	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_definitions)
+	la a1, w_definitions
+# DELETED LUI: 	lui	a5,%hi(.LC98)
+	la a0, .LC98
+	call	create_word
+	li	a3,0
+	li	a2,0
+	li	a1,0
+# DELETED LUI: 	lui	a5,%hi(.LC99)
+	la a0, .LC99
 	call	create_word
 # DELETED LUI: 	lui	a5,%hi(dict_len)
 	la t6, dict_len
@@ -8321,508 +8725,522 @@ main:
 	li	a2,-1
 # DELETED LUI: 	lui	a5,%hi(w_block)
 	la a1, w_block
-# DELETED LUI: 	lui	a5,%hi(.LC98)
-	la a0, .LC98
-	call	create_word
-	li	a3,0
-	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_buffer)
-	la a1, w_buffer
-# DELETED LUI: 	lui	a5,%hi(.LC99)
-	la a0, .LC99
-	call	create_word
-	li	a3,0
-	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_update)
-	la a1, w_update
 # DELETED LUI: 	lui	a5,%hi(.LC100)
 	la a0, .LC100
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_empty_buffers)
-	la a1, w_empty_buffers
+# DELETED LUI: 	lui	a5,%hi(w_buffer)
+	la a1, w_buffer
 # DELETED LUI: 	lui	a5,%hi(.LC101)
 	la a0, .LC101
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_save_buffers)
-	la a1, w_save_buffers
+# DELETED LUI: 	lui	a5,%hi(w_update)
+	la a1, w_update
 # DELETED LUI: 	lui	a5,%hi(.LC102)
 	la a0, .LC102
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_list)
-	la a1, w_list
+# DELETED LUI: 	lui	a5,%hi(w_empty_buffers)
+	la a1, w_empty_buffers
 # DELETED LUI: 	lui	a5,%hi(.LC103)
 	la a0, .LC103
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_load)
-	la a1, w_load
+# DELETED LUI: 	lui	a5,%hi(w_save_buffers)
+	la a1, w_save_buffers
 # DELETED LUI: 	lui	a5,%hi(.LC104)
 	la a0, .LC104
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_79_standard)
-	la a1, w_79_standard
+# DELETED LUI: 	lui	a5,%hi(w_list)
+	la a1, w_list
 # DELETED LUI: 	lui	a5,%hi(.LC105)
 	la a0, .LC105
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_dup)
-	la a1, w_dup
+# DELETED LUI: 	lui	a5,%hi(w_load)
+	la a1, w_load
 # DELETED LUI: 	lui	a5,%hi(.LC106)
 	la a0, .LC106
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_drop)
-	la a1, w_drop
+# DELETED LUI: 	lui	a5,%hi(w_79_standard)
+	la a1, w_79_standard
 # DELETED LUI: 	lui	a5,%hi(.LC107)
 	la a0, .LC107
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_swap)
-	la a1, w_swap
+# DELETED LUI: 	lui	a5,%hi(w_dup)
+	la a1, w_dup
 # DELETED LUI: 	lui	a5,%hi(.LC108)
 	la a0, .LC108
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_over)
-	la a1, w_over
+# DELETED LUI: 	lui	a5,%hi(w_drop)
+	la a1, w_drop
 # DELETED LUI: 	lui	a5,%hi(.LC109)
 	la a0, .LC109
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_rot)
-	la a1, w_rot
+# DELETED LUI: 	lui	a5,%hi(w_swap)
+	la a1, w_swap
 # DELETED LUI: 	lui	a5,%hi(.LC110)
 	la a0, .LC110
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_dot)
-	la a1, w_dot
+# DELETED LUI: 	lui	a5,%hi(w_over)
+	la a1, w_over
 # DELETED LUI: 	lui	a5,%hi(.LC111)
 	la a0, .LC111
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_u_dot)
-	la a1, w_u_dot
+# DELETED LUI: 	lui	a5,%hi(w_rot)
+	la a1, w_rot
 # DELETED LUI: 	lui	a5,%hi(.LC112)
 	la a0, .LC112
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_cr)
-	la a1, w_cr
+# DELETED LUI: 	lui	a5,%hi(w_dot_s)
+	la a1, w_dot_s
 # DELETED LUI: 	lui	a5,%hi(.LC113)
 	la a0, .LC113
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_emit)
-	la a1, w_emit
+# DELETED LUI: 	lui	a5,%hi(w_include)
+	la a1, w_include
 # DELETED LUI: 	lui	a5,%hi(.LC114)
 	la a0, .LC114
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_key)
-	la a1, w_key
+# DELETED LUI: 	lui	a5,%hi(w_dot)
+	la a1, w_dot
 # DELETED LUI: 	lui	a5,%hi(.LC115)
 	la a0, .LC115
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_space)
-	la a1, w_space
+# DELETED LUI: 	lui	a5,%hi(w_u_dot)
+	la a1, w_u_dot
 # DELETED LUI: 	lui	a5,%hi(.LC116)
 	la a0, .LC116
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_spaces)
-	la a1, w_spaces
+# DELETED LUI: 	lui	a5,%hi(w_cr)
+	la a1, w_cr
 # DELETED LUI: 	lui	a5,%hi(.LC117)
 	la a0, .LC117
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_hex)
-	la a1, w_hex
+# DELETED LUI: 	lui	a5,%hi(w_emit)
+	la a1, w_emit
 # DELETED LUI: 	lui	a5,%hi(.LC118)
 	la a0, .LC118
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_question)
-	la a1, w_question
+# DELETED LUI: 	lui	a5,%hi(w_key)
+	la a1, w_key
 # DELETED LUI: 	lui	a5,%hi(.LC119)
 	la a0, .LC119
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_eq)
-	la a1, w_eq
+# DELETED LUI: 	lui	a5,%hi(w_space)
+	la a1, w_space
 # DELETED LUI: 	lui	a5,%hi(.LC120)
 	la a0, .LC120
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_gt)
-	la a1, w_gt
+# DELETED LUI: 	lui	a5,%hi(w_spaces)
+	la a1, w_spaces
 # DELETED LUI: 	lui	a5,%hi(.LC121)
 	la a0, .LC121
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_lt)
-	la a1, w_lt
+# DELETED LUI: 	lui	a5,%hi(w_hex)
+	la a1, w_hex
 # DELETED LUI: 	lui	a5,%hi(.LC122)
 	la a0, .LC122
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_store)
-	la a1, w_store
+# DELETED LUI: 	lui	a5,%hi(w_question)
+	la a1, w_question
 # DELETED LUI: 	lui	a5,%hi(.LC123)
 	la a0, .LC123
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_fetch)
-	la a1, w_fetch
+# DELETED LUI: 	lui	a5,%hi(w_eq)
+	la a1, w_eq
 # DELETED LUI: 	lui	a5,%hi(.LC124)
 	la a0, .LC124
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_c_store)
-	la a1, w_c_store
+# DELETED LUI: 	lui	a5,%hi(w_gt)
+	la a1, w_gt
 # DELETED LUI: 	lui	a5,%hi(.LC125)
 	la a0, .LC125
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_c_fetch)
-	la a1, w_c_fetch
+# DELETED LUI: 	lui	a5,%hi(w_lt)
+	la a1, w_lt
 # DELETED LUI: 	lui	a5,%hi(.LC126)
 	la a0, .LC126
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_here)
-	la a1, w_here
+# DELETED LUI: 	lui	a5,%hi(w_store)
+	la a1, w_store
 # DELETED LUI: 	lui	a5,%hi(.LC127)
 	la a0, .LC127
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_allot)
-	la a1, w_allot
+# DELETED LUI: 	lui	a5,%hi(w_fetch)
+	la a1, w_fetch
 # DELETED LUI: 	lui	a5,%hi(.LC128)
 	la a0, .LC128
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_comma_op)
-	la a1, w_comma_op
+# DELETED LUI: 	lui	a5,%hi(w_c_store)
+	la a1, w_c_store
 # DELETED LUI: 	lui	a5,%hi(.LC129)
 	la a0, .LC129
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_c_comma_op)
-	la a1, w_c_comma_op
+# DELETED LUI: 	lui	a5,%hi(w_c_fetch)
+	la a1, w_c_fetch
 # DELETED LUI: 	lui	a5,%hi(.LC130)
 	la a0, .LC130
 	call	create_word
-	li	a3,1
+	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_literal)
-	la a1, w_literal
+# DELETED LUI: 	lui	a5,%hi(w_here)
+	la a1, w_here
 # DELETED LUI: 	lui	a5,%hi(.LC131)
 	la a0, .LC131
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_state)
-	la a1, w_state
+# DELETED LUI: 	lui	a5,%hi(w_allot)
+	la a1, w_allot
 # DELETED LUI: 	lui	a5,%hi(.LC132)
 	la a0, .LC132
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_base)
-	la a1, w_base
+# DELETED LUI: 	lui	a5,%hi(w_comma_op)
+	la a1, w_comma_op
 # DELETED LUI: 	lui	a5,%hi(.LC133)
 	la a0, .LC133
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_in)
-	la a1, w_in
+# DELETED LUI: 	lui	a5,%hi(w_c_comma_op)
+	la a1, w_c_comma_op
 # DELETED LUI: 	lui	a5,%hi(.LC134)
 	la a0, .LC134
 	call	create_word
-	li	a3,0
+	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_blk)
-	la a1, w_blk
+# DELETED LUI: 	lui	a5,%hi(w_literal)
+	la a1, w_literal
 # DELETED LUI: 	lui	a5,%hi(.LC135)
 	la a0, .LC135
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_scr)
-	la a1, w_scr
+# DELETED LUI: 	lui	a5,%hi(w_state)
+	la a1, w_state
 # DELETED LUI: 	lui	a5,%hi(.LC136)
 	la a0, .LC136
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_pad)
-	la a1, w_pad
+# DELETED LUI: 	lui	a5,%hi(w_base)
+	la a1, w_base
 # DELETED LUI: 	lui	a5,%hi(.LC137)
 	la a0, .LC137
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_decimal)
-	la a1, w_decimal
+# DELETED LUI: 	lui	a5,%hi(w_in)
+	la a1, w_in
 # DELETED LUI: 	lui	a5,%hi(.LC138)
 	la a0, .LC138
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_depth)
-	la a1, w_depth
+# DELETED LUI: 	lui	a5,%hi(w_blk)
+	la a1, w_blk
 # DELETED LUI: 	lui	a5,%hi(.LC139)
 	la a0, .LC139
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_exit)
-	la a1, w_exit
-# DELETED LUI: 	lui	a5,%hi(.LC22)
-	la a0, .LC22
-	call	create_word
-	li	a3,0
-	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_bye)
-	la a1, w_bye
+# DELETED LUI: 	lui	a5,%hi(w_scr)
+	la a1, w_scr
 # DELETED LUI: 	lui	a5,%hi(.LC140)
 	la a0, .LC140
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_lit)
-	la a1, w_lit
-# DELETED LUI: 	lui	a5,%hi(.LC20)
-	la a0, .LC20
-	call	create_word
-	li	a3,0
-	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_execute)
-	la a1, w_execute
+# DELETED LUI: 	lui	a5,%hi(w_pad)
+	la a1, w_pad
 # DELETED LUI: 	lui	a5,%hi(.LC141)
 	la a0, .LC141
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_branch0)
-	la a1, w_branch0
-# DELETED LUI: 	lui	a5,%hi(.LC23)
-	la a0, .LC23
+# DELETED LUI: 	lui	a5,%hi(w_decimal)
+	la a1, w_decimal
+# DELETED LUI: 	lui	a5,%hi(.LC142)
+	la a0, .LC142
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_branch)
-	la a1, w_branch
+# DELETED LUI: 	lui	a5,%hi(w_depth)
+	la a1, w_depth
+# DELETED LUI: 	lui	a5,%hi(.LC143)
+	la a0, .LC143
+	call	create_word
+	li	a3,0
+	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_exit)
+	la a1, w_exit
 # DELETED LUI: 	lui	a5,%hi(.LC24)
 	la a0, .LC24
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_do_run)
-	la a1, w_do_run
+# DELETED LUI: 	lui	a5,%hi(w_bye)
+	la a1, w_bye
+# DELETED LUI: 	lui	a5,%hi(.LC144)
+	la a0, .LC144
+	call	create_word
+	li	a3,0
+	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_lit)
+	la a1, w_lit
+# DELETED LUI: 	lui	a5,%hi(.LC22)
+	la a0, .LC22
+	call	create_word
+	li	a3,0
+	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_execute)
+	la a1, w_execute
+# DELETED LUI: 	lui	a5,%hi(.LC145)
+	la a0, .LC145
+	call	create_word
+	li	a3,0
+	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_branch0)
+	la a1, w_branch0
 # DELETED LUI: 	lui	a5,%hi(.LC25)
 	la a0, .LC25
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_loop_run)
-	la a1, w_loop_run
+# DELETED LUI: 	lui	a5,%hi(w_branch)
+	la a1, w_branch
 # DELETED LUI: 	lui	a5,%hi(.LC26)
 	la a0, .LC26
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_plus_loop_run)
-	la a1, w_plus_loop_run
+# DELETED LUI: 	lui	a5,%hi(w_do_run)
+	la a1, w_do_run
 # DELETED LUI: 	lui	a5,%hi(.LC27)
 	la a0, .LC27
 	call	create_word
 	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_print_str)
-	la a1, w_print_str
+# DELETED LUI: 	lui	a5,%hi(w_loop_run)
+	la a1, w_loop_run
 # DELETED LUI: 	lui	a5,%hi(.LC28)
 	la a0, .LC28
 	call	create_word
 	li	a3,0
 	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_plus_loop_run)
+	la a1, w_plus_loop_run
+# DELETED LUI: 	lui	a5,%hi(.LC29)
+	la a0, .LC29
+	call	create_word
+	li	a3,0
+	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_print_str)
+	la a1, w_print_str
+# DELETED LUI: 	lui	a5,%hi(.LC30)
+	la a0, .LC30
+	call	create_word
+	li	a3,0
+	li	a2,-1
 # DELETED LUI: 	lui	a5,%hi(w_colon)
 	la a1, w_colon
-# DELETED LUI: 	lui	a5,%hi(.LC142)
-	la a0, .LC142
-	call	create_word
-	li	a3,1
-	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_semicolon)
-	la a1, w_semicolon
-# DELETED LUI: 	lui	a5,%hi(.LC143)
-	la a0, .LC143
-	call	create_word
-	li	a3,1
-	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_if)
-	la a1, w_if
-# DELETED LUI: 	lui	a5,%hi(.LC144)
-	la a0, .LC144
-	call	create_word
-	li	a3,1
-	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_then)
-	la a1, w_then
-# DELETED LUI: 	lui	a5,%hi(.LC145)
-	la a0, .LC145
-	call	create_word
-	li	a3,1
-	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_else)
-	la a1, w_else
 # DELETED LUI: 	lui	a5,%hi(.LC146)
 	la a0, .LC146
 	call	create_word
 	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_begin)
-	la a1, w_begin
+# DELETED LUI: 	lui	a5,%hi(w_semicolon)
+	la a1, w_semicolon
 # DELETED LUI: 	lui	a5,%hi(.LC147)
 	la a0, .LC147
 	call	create_word
 	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_until)
-	la a1, w_until
+# DELETED LUI: 	lui	a5,%hi(w_if)
+	la a1, w_if
 # DELETED LUI: 	lui	a5,%hi(.LC148)
 	la a0, .LC148
 	call	create_word
 	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_while)
-	la a1, w_while
+# DELETED LUI: 	lui	a5,%hi(w_then)
+	la a1, w_then
 # DELETED LUI: 	lui	a5,%hi(.LC149)
 	la a0, .LC149
 	call	create_word
 	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_repeat)
-	la a1, w_repeat
+# DELETED LUI: 	lui	a5,%hi(w_else)
+	la a1, w_else
 # DELETED LUI: 	lui	a5,%hi(.LC150)
 	la a0, .LC150
 	call	create_word
 	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_do)
-	la a1, w_do
+# DELETED LUI: 	lui	a5,%hi(w_begin)
+	la a1, w_begin
 # DELETED LUI: 	lui	a5,%hi(.LC151)
 	la a0, .LC151
 	call	create_word
 	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_loop)
-	la a1, w_loop
+# DELETED LUI: 	lui	a5,%hi(w_until)
+	la a1, w_until
 # DELETED LUI: 	lui	a5,%hi(.LC152)
 	la a0, .LC152
 	call	create_word
 	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_plus_loop)
-	la a1, w_plus_loop
+# DELETED LUI: 	lui	a5,%hi(w_while)
+	la a1, w_while
 # DELETED LUI: 	lui	a5,%hi(.LC153)
 	la a0, .LC153
 	call	create_word
-	li	a3,0
+	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_i)
-	la a1, w_i
+# DELETED LUI: 	lui	a5,%hi(w_repeat)
+	la a1, w_repeat
 # DELETED LUI: 	lui	a5,%hi(.LC154)
 	la a0, .LC154
 	call	create_word
-	li	a3,0
+	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_j)
-	la a1, w_j
+# DELETED LUI: 	lui	a5,%hi(w_do)
+	la a1, w_do
 # DELETED LUI: 	lui	a5,%hi(.LC155)
 	la a0, .LC155
 	call	create_word
-	li	a3,0
+	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_leave)
-	la a1, w_leave
+# DELETED LUI: 	lui	a5,%hi(w_loop)
+	la a1, w_loop
 # DELETED LUI: 	lui	a5,%hi(.LC156)
 	la a0, .LC156
 	call	create_word
 	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_recurse)
-	la a1, w_recurse
+# DELETED LUI: 	lui	a5,%hi(w_plus_loop)
+	la a1, w_plus_loop
 # DELETED LUI: 	lui	a5,%hi(.LC157)
 	la a0, .LC157
 	call	create_word
-	li	a3,1
+	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_tick)
-	la a1, w_tick
+# DELETED LUI: 	lui	a5,%hi(w_i)
+	la a1, w_i
 # DELETED LUI: 	lui	a5,%hi(.LC158)
 	la a0, .LC158
 	call	create_word
-	li	a3,1
+	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_immediate)
-	la a1, w_immediate
+# DELETED LUI: 	lui	a5,%hi(w_j)
+	la a1, w_j
 # DELETED LUI: 	lui	a5,%hi(.LC159)
 	la a0, .LC159
 	call	create_word
-	li	a3,1
+	li	a3,0
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_lbracket)
-	la a1, w_lbracket
+# DELETED LUI: 	lui	a5,%hi(w_leave)
+	la a1, w_leave
 # DELETED LUI: 	lui	a5,%hi(.LC160)
 	la a0, .LC160
 	call	create_word
 	li	a3,1
 	li	a2,-1
-# DELETED LUI: 	lui	a5,%hi(w_rbracket)
-	la a1, w_rbracket
+# DELETED LUI: 	lui	a5,%hi(w_recurse)
+	la a1, w_recurse
 # DELETED LUI: 	lui	a5,%hi(.LC161)
 	la a0, .LC161
 	call	create_word
+	li	a3,1
+	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_tick)
+	la a1, w_tick
 # DELETED LUI: 	lui	a5,%hi(.LC162)
-	la a5, .LC162
+	la a0, .LC162
+	call	create_word
+	li	a3,1
+	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_immediate)
+	la a1, w_immediate
+# DELETED LUI: 	lui	a5,%hi(.LC163)
+	la a0, .LC163
+	call	create_word
+	li	a3,1
+	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_lbracket)
+	la a1, w_lbracket
+# DELETED LUI: 	lui	a5,%hi(.LC164)
+	la a0, .LC164
+	call	create_word
+	li	a3,1
+	li	a2,-1
+# DELETED LUI: 	lui	a5,%hi(w_rbracket)
+	la a1, w_rbracket
+# DELETED LUI: 	lui	a5,%hi(.LC165)
+	la a0, .LC165
+	call	create_word
+# DELETED LUI: 	lui	a5,%hi(.LC166)
+	la a5, .LC166
 	sw	a5,-20(s0)
 	lw	a5,-20(s0)
 	sw	a5,-24(s0)
@@ -8835,7 +9253,7 @@ main:
 # 0 "" 2
  #NO_APP
 	nop
-.L550:
+.L579:
 # DELETED LUI: 	lui	a5,%hi(input_buffer)
 	la a5, input_buffer
 	sw	a5,-36(s0)
@@ -8859,8 +9277,8 @@ main:
 # DELETED LUI: 	lui	a5,%hi(input_buffer)
 	la a0, input_buffer
 	call	eval
-# DELETED LUI: 	lui	a5,%hi(.LC162)
-	la a5, .LC162
+# DELETED LUI: 	lui	a5,%hi(.LC166)
+	la a5, .LC166
 	sw	a5,-28(s0)
 	lw	a5,-28(s0)
 	sw	a5,-32(s0)
@@ -8873,5 +9291,5 @@ main:
 # 0 "" 2
  #NO_APP
 	nop
-	j	.L550
+	j	.L579
 .data
