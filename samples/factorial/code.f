@@ -1,0 +1,6 @@
+( N factorial via DO LOOP )
+: FACT ( n -- n! )
+  1 SWAP 1+ 1 DO
+    I *
+  LOOP ;
+5 FACT .

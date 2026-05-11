@@ -38,4 +38,36 @@ static inline char __attribute__((always_inline)) read_char() {
     return (char)res;
 }
 
+static inline int __attribute__((always_inline)) open_file(const char* path, int flags) {
+    const char* __p = path; int __f = flags; int res;
+    asm volatile (
+        "mv a0, %1\n\tmv a1, %2\n\tli a7, 1024\n\tecall\n\tmv %0, a0"
+        : "=r"(res) : "r"(__p), "r"(__f) : "a0", "a1", "a7"
+    );
+    return res;
+}
+
+static inline void __attribute__((always_inline)) close_file(int fd) {
+    int __t = fd;
+    asm volatile ("mv a0, %0\n\tli a7, 57\n\tecall" : : "r"(__t) : "a0", "a7");
+}
+
+static inline int __attribute__((always_inline)) read_file(int fd, void* buf, int len) {
+    int __1 = fd; void* __2 = buf; int __3 = len; int res;
+    asm volatile (
+        "mv a0, %1\n\tmv a1, %2\n\tmv a2, %3\n\tli a7, 63\n\tecall\n\tmv %0, a0"
+        : "=r"(res) : "r"(__1), "r"(__2), "r"(__3) : "a0", "a1", "a2", "a7"
+    );
+    return res;
+}
+
+static inline int __attribute__((always_inline)) write_file(int fd, const void* buf, int len) {
+    int __1 = fd; const void* __2 = buf; int __3 = len; int res;
+    asm volatile (
+        "mv a0, %1\n\tmv a1, %2\n\tmv a2, %3\n\tli a7, 64\n\tecall\n\tmv %0, a0"
+        : "=r"(res) : "r"(__1), "r"(__2), "r"(__3) : "a0", "a1", "a2", "a7"
+    );
+    return res;
+}
+
 #endif

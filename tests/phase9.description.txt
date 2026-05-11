@@ -1,0 +1,11 @@
+Фаза 9: вокабуляры.
+
+Проверяет:
+- CONTEXT и CURRENT оба начинаются с 0 (FORTH) (1-2).
+- VOCABULARY создаёт новый id вокабуляра. Исполнение VA ставит CONTEXT в 1 (3-4).
+- FORTH сбрасывает CONTEXT в 0 (5).
+- Chain to FORTH: поиск DUP из VA находит его по цепочке к FORTH (6).
+- Новые определения попадают в CURRENT, а не в CONTEXT (7-12). Определение XYZ в FORTH, а затем в VA, даёт два разных XYZ.
+- После FORTH DEFINITIONS, новая VOCABULARY VD создаётся в FORTH; VD DEFINITIONS переключает и CURRENT, и CONTEXT в VD (13-17).
+- FOO находится в VD; не находится при CONTEXT равном FORTH (18).
+- В конце CURRENT всё ещё VD (=2), CONTEXT равен FORTH (=0) (19).

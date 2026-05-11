@@ -1,0 +1,20 @@
+1 0 2 0 D+ . .
+0 1 0 1 D+ . .
+1 0 DNEGATE 1 0 D+ . .
+0 0 DNEGATE . .
+1 0 DNEGATE . .
+100 0 DNEGATE . .
+-1 -1 1 0 D< .
+1 0 -1 -1 D< .
+1 0 1 0 D< .
+123 0 <# #S #> TYPE
+0 0 <# #S #> TYPE
+99 .
+123 0 <# # # # #> TYPE
+: PRN DUP ABS 0 <# #S ROT SIGN #> TYPE SPACE ;
+-42 PRN 0 PRN 7 PRN
+<# 65 HOLD 66 HOLD 67 HOLD 0 0 #> TYPE
+65 PAD C! 49 PAD 1+ C! 50 PAD 2 + C! 51 PAD 3 + C! 32 PAD 4 + C!
+0 0 PAD CONVERT DROP . .
+65 PAD C! 32 PAD 1+ C! 0 0 PAD CONVERT DROP . .
+BYE

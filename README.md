@@ -1,60 +1,134 @@
-# Интерпретатор языка программирования Forth для симулятора RARS
----
-**Автор - Волосевич Александр Андреевич, студент БПИ242 НИУ ВШЭ**
+﻿# Интерпретатор языка программирования Forth для симулятора RARS
 
----
-Для сборки и запуска вам понадобятся:
+**Автор: Волосевич Александр Андреевич, студент БПИ242 НИУ ВШЭ**
 
-  
+Реализация полностью соответствует стандарту **FORTH-79** (с одним явным
+расширением `BYE`). Соответствие подтверждается тестами фаз 0..12 и
+демонстрационными примерами.
 
-1.  **RISC-V GCC Toolchain**: Для компиляции C в ассемблер RISC-V.
+## Сборка и запуск
 
-2.  **Python 3**: Для патчинга ассемблерного кода под формат RARS.
+Требуется:
 
-3.  **RARS Simulator**: Эмулятор для запуска.
+1. **RISC-V GCC Toolchain** для компиляции C в ассемблер RISC-V.
+   Скачать можно здесь: https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases
+2. **Python 3** для патчинга ассемблерного кода под формат RARS.
+3. **RARS Simulator** (rars1_6.jar лежит в корне репозитория).
+4. **Java Runtime (JRE)** для запуска RARS.
 
-4.  **Java Runtime (JRE)**: Для работы RARS.
+Утилиты `riscv-none-elf-gcc`, `python` (или `py`) и `java` должны быть доступны в PATH.
 
-  
+### Сборка
 
-Скачать необходимый компилятор C можно по ссылке: https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases
+Запустите `compile.bat` (Windows) или `./compile.sh` (Linux/macOS).
+Скрипт вызывает gcc для генерации `forth.s` и затем `fix_rars.py` для
+приведения ассемблера к виду, понятному RARS.
 
-Убедитесь, что необходимые утилиты добавлены в PATH(при сборке на Windows) и запускаются из консоли.
+### Запуск в GUI
 
-Запустите compile.bat или compile.sh (в зависимости от Вашей системы)
+1. Откройте `forth.s` в RARS.
+2. В `Settings` включите `Initialize Program Counter to global 'main' if defined`.
+3. F3 чтобы ассемблировать.
+4. F5 чтобы запустить.
+5. Вводите Forth-команды в `Run I/O` окне. `BYE` завершает программу.
 
-Вставьте полученный файл forth.s в RARS и включите `Initialize Program Counter to global 'main' if defined` в `Settings`
+### Автоматический запуск (тесты и примеры)
 
-Скомпилируйте проект (F3)
+Скрипты `test.bat` (Windows) и `test.sh` (Linux/macOS, Git Bash на Windows)
+запускают RARS в неинтерактивном режиме, читая stdin из файла и записывая
+вывод в файл:
 
-Запустите проект (F5)
+```bash
+./test.sh input.txt output.txt
+```
 
+или
 
----
-## Список реализованных функций
-Стековые операции DUP, DROP, SWAP, OVER, ROT
+```cmd
+test.bat input.txt output.txt
+```
 
-Арифметика и сравнение: +, -, *, /, MOD, /MOD, =, <, >
+Скрипт удаляет `forth.blk` перед запуском (чтобы предыдущие
+SAVE-BUFFERS не загрязняли состояние), затем зовёт RARS.
 
-Работа с памятью: !, @, C!, C@ (работают с байтами), , (comma), HERE, ALLOT
+## Соответствие стандарту FORTH-79
 
-Ввод-вывод: ., CR, EMIT, KEY.
+Реализован полный Required Word Set FORTH-79:
+- **Nucleus**: стек, арифметика, return-стек, побитовые операции, циклы.
+- **Interpreter**: парсер, словарь, pictured numeric output, ABORT/QUIT/EXPECT/QUERY.
+- **Compiler**: `:` `;` `IMMEDIATE` `[` `]` `LITERAL` `CREATE` `DOES>`
+  `FORGET` `COMPILE` `[COMPILE]` `VOCABULARY` `DEFINITIONS`.
+- **Device**: 32 блока по 1024 байта, BLOCK/BUFFER/UPDATE/EMPTY-BUFFERS/SAVE-BUFFERS/LIST/LOAD/SCR.
 
-Компиляция и поток управления: :, ;, IMMEDIATE, [, ], LITERAL, EXECUTE, IF, THEN, ELSE, BEGIN, UNTIL, DO, LOOP, I.
+Архитектурные требования стандарта:
+- 16-битная знаковая арифметика, флаг true равен 1.
+- Байт-адресуемая память, ячейка ровно 2 байта.
+- VARIABLE выделяет ровно 2 байта.
+- Адресация по модулю 65536.
+- Длина имени до 31 символа, различение по длине + первым 31 символам.
+- Адресное пространство и стеки удовлетворяют тестовому минимуму § 6.2.
 
-Словарные слова: ' (tick) — реализован, возвращает ID слова.
+Расширения сверх стандарта:
+- `BYE` (system extension) для завершения программы.
+- `HEX` и `BL` из Reference Word Set.
+- `RECURSE` (общепринятое расширение).
 
-## В процессе реализации
-EXIT: Пока что завершает работу программы
+Документ [`ERROR_CONDITIONS.md`](ERROR_CONDITIONS.md) описывает действия системы
+на каждое error condition по требованию § 6.1.
 
-Побитовые операции
+Допустимый лейбл: **«FORTH-79 Standard with `BYE` system extension»**.
 
-Дополнительная арифметика
+## Структура репозитория
 
-Возвратный стек
+```
+forth.c              исходник интерпретатора на C
+forth.s              сгенерированный ассемблер RISC-V (после compile)
+rars_lib.h           inline-обёртки над RARS syscalls
+fix_rars.py          патчер gcc-ассемблера под RARS
+compile.bat          сборка на Windows
+compile.sh           сборка на Linux/macOS
+test.bat             запуск тестов на Windows
+test.sh              запуск тестов на Linux/macOS
+ERROR_CONDITIONS.md  документ по § 6.1 стандарта
+forth.txt            оригинальный текст стандарта FORTH-79
+rars.wiki/           документация RARS
+rars-master/         исходники RARS (для отладки взаимодействия)
 
-Расширенное управление потоком
+tests/               регрессионные тесты по фазам разработки
+  phase0..phase12.input.txt        вход для теста
+  phase0..phase12.output.txt       ожидаемый вывод
+  phase0..phase12.description.txt  описание каждой фазы
 
-Беззнаковая арифметика
+samples/             демонстрационные примеры
+  hello_world/          вывод "Hello, World!" через ."
+  fibonacci/            k-е число Фибоначчи через DO LOOP
+  gcd/                  НОД через BEGIN WHILE REPEAT
+  factorial/            факториал через DO LOOP
+  is_prime/             проверка на простоту с LEAVE и +LOOP
+  sum_squares/          сумма квадратов через аккумулятор
+  reverse_digits/       печать цифр в обратном порядке
+  counter/              счётчик в VARIABLE
+  fizzbuzz/             FizzBuzz с вложенными IF ELSE THEN
+  multiplication_table/ таблица умножения через nested DO LOOP
+  каждая папка содержит:
+    code.f          читаемый исходник
+    description.txt описание примера
+    input.txt       вход для test.sh / test.bat
+    output.txt      зафиксированный вывод
+```
 
-Расширенная работа со стеком
+## Прогон тестов
+
+Любая фаза:
+
+```bash
+./test.sh tests/phase0.input.txt /tmp/out.txt
+diff tests/phase0.output.txt /tmp/out.txt
+```
+
+Любой пример:
+
+```bash
+./test.sh samples/fibonacci/input.txt /tmp/out.txt
+diff samples/fibonacci/output.txt /tmp/out.txt
+```

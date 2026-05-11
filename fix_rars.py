@@ -19,7 +19,7 @@ def fix_asm(filename):
             new_lines.append(f"\t.space {size}\n")
             continue
 
-        if any(x in line for x in ['.attribute', '.size', '.type', '.ident', '.option']):
+        if any(x in line for x in ['.attribute', '.size', '.type', '.ident', '.option', '.file']):
             continue
         
         if "lui" in line and "%hi" in line:

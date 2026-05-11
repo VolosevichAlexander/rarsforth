@@ -1,0 +1,1 @@
+ok> 10 ok> 2 ok> 10 ok> 16 ok> 6 ok> 0 ok> 0 ok> 0 ok> 3 ok> 1 ok> 5 ok> 1 ok> 42 ok> 65 66 ok> 1 ok> 100 ok> 
