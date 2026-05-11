@@ -1,5 +1,4 @@
 #include "rars_lib.h"
-#include <stddef.h>
 
 #define STACK_SIZE 64
 #define MEMORY_SIZE 65536
